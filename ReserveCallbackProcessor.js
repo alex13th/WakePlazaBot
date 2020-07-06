@@ -56,10 +56,28 @@ class ReserveCallbackProcessor {
     }
   }
 
-  callBookButton() {
+  callBookButton(check = true) {
+    let msgText = strReserveStateHeader;
+    let keyboard;
     this.state.menu = 'book';
-    this.message.text = strReserveStateHeader + this.state.reserve.getStateMessageText();
-    this.message.keyboard = this.createBookMenuKeyboard();
+
+    if(check) {
+
+      if(!this.state.reserve.reserveArray && this.dataAdapter) {
+        let reserveRows = this.dataAdapter.getActiveReserveRows();
+        let reserveArray = this.state.reserve.createReserveArray(reserveRows);
+        this.state.reserve.reserveArray = reserveArray;
+      }
+
+      this.state.reserve.findConflict();
+    }
+
+    msgText += this.state.reserve.getStateMessageText();
+
+    keyboard = this.createBookMenuKeyboard();
+
+    this.message.text = msgText;
+    this.message.keyboard = keyboard;
     this.callbackText = strReserve;
   }
   
@@ -70,10 +88,10 @@ class ReserveCallbackProcessor {
       newDate.setHours(startDate.getHours(), startDate.getMinutes(), 0, 0);
       newDate.setDate(newDate.getDate() + parseInt(data));
       this.state.reserve.start = newDate;
-      this.callBookButton();
+      this.callBookButton(true);
       this.callbackText = strDay + ": " + this.state.reserve.start.toLocaleDateString(dateLocale, dateOptions);
     } else {
-      this.callBookButton();
+      this.callBookButton(false);
     }
   }
 
@@ -91,7 +109,7 @@ class ReserveCallbackProcessor {
       this.state.reserve.start.setHours(data);
       this.callMinutesButton();
     } else {
-      this.callBookButton();
+      this.callBookButton(true);
     }
   }
 
@@ -107,7 +125,7 @@ class ReserveCallbackProcessor {
   callMinutesMenu(data) {
     if(!(data === 'back')) {
       this.state.reserve.start.setMinutes(data);
-      this.callBookButton();
+      this.callBookButton(true);
       this.callbackText = strTime + ": " + this.state.reserve.startTime;
     } else {
       this.callTimeButton();
@@ -125,7 +143,7 @@ class ReserveCallbackProcessor {
 
   callCountMenu(data) {
     this.state.reserve.count = +data;
-    this.callBookButton();
+    this.callBookButton(true);
     this.callbackText = strCount + ": " + data;
   }
 

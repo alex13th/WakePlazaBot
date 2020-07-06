@@ -12,11 +12,11 @@ class WakeProcessor extends ReserveCallbackProcessor {
         this.state = new WakeReserveState();
     }
     
-    if(dataAdapter) {
-      let reserveRows = dataAdapter.getActiveReserveRows();
-      let reserveArray = this.state.reserve.createReserveArray(reserveRows);
-      this.state.reserve.reserveArray = reserveArray;
-    }
+    // if(dataAdapter) {
+    //   let reserveRows = dataAdapter.getActiveReserveRows();
+    //   let reserveArray = this.state.reserve.createReserveArray(reserveRows);
+    //   this.state.reserve.reserveArray = reserveArray;
+    // }
 
     this.commandHandlers = {};
     this.commandHandlers['wake'] = this.cmdWake;
@@ -78,11 +78,11 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callSetMenu(data) {
     if(data === 'back') {
-      this.callBookButton();
+      this.callBookButton(false);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'set';
-      this.callBookButton();
+      this.callBookButton(true);
       this.callbackText = strSet + ': ' + this.state.reserve.count;
     }
   }
@@ -98,11 +98,11 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callHourMenu(data) {
     if(data === 'back') {
-      this.callBookButton();
+      this.callBookButton(false);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'hour';
-      this.callBookButton();
+      this.callBookButton(true);
       this.callbackText = strHour + ': ' + this.state.reserve.count;
     }
   }
@@ -118,13 +118,13 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callBoardButton() {
     this.state.reserve.board = this.state.reserve.board ? 0 : 1;
-    this.callBookButton();
+    this.callBookButton(false);
     this.callbackText = this.state.reserve.board ? strAddBoard : strRemoveBoard
   }
 
   callHydroButton() {
     this.state.reserve.hydro = this.state.reserve.hydro ? 0 : 1;
-    this.callBookButton();
+    this.callBookButton(false);
     this.callbackText = this.state.reserve.hydro ? strAddHydro : strRemoveHydro
   }
 

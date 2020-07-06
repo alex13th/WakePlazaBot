@@ -5,6 +5,7 @@ class Reserve {
       start.setHours(0, 0, 0, 0);
     }
 
+    this.conflictReserve = null;
     this.fieldPositions = {};
 
     this.createdAt = new Date();
@@ -50,7 +51,7 @@ class Reserve {
   }
 
   get isCompleted() {
-    return this.count && this.startTime && !this.findConflict();
+    return this.count && this.startTime && !this.conflictReserve;
   }
 
   toString() {
@@ -73,6 +74,8 @@ class Reserve {
   }
 
   findConflict() {
+    let result = null;
+
     if(this.reserveArray) {
       for(let i = 0; i < this.reserveArray.length; i++) {
         let reserve = this.reserveArray[i];
@@ -80,33 +83,37 @@ class Reserve {
         if(this.start.getTime() === reserve.start.getTime() || 
           this.end.getTime() === reserve.end.getTime() ) {
 
-          return reserve;
+          result = reserve;
+          break;
         }
 
         if(this.start > reserve.start && this.start < reserve.end) {
-          return reserve;
+          result = reserve;
+          break;
         }
 
         if(this.end > reserve.start && this.end < reserve.end) {
-          return reserve;
+          result = reserve;
+          break;
         }
 
         if(this.start < reserve.start && this.end > reserve.start) {
-          return reserve;
+          result = reserve;
+          break;
         }
       }
     }
 
-    return null;
+    this.conflictReserve = result;
+    return result;
   }
 
   getStateMessageText() {
     let result = '';
-    let confictReserve = this.findConflict();
 
-    if(confictReserve) {
+    if(this.conflictReserve) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + confictReserve.toString() + '\n';
+      result += '\n' + stopIcon + this.conflictReserve.toString() + '\n';
     }
 
     if(this.telegramName)
