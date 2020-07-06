@@ -14,11 +14,22 @@ class GoogleSheetDataAdapter {
     }
   }
 
-  getActiveReserveRows() {
+  getActiveReserveRows(keyColumnNum = null, keyValue =null) {
+    let result = [];
+
     let sheet = this.openSheet(this.listSheetName);
     let values = sheet.getDataRange().getValues();
-    let result = values.slice();
-    result.splice(0, 1);
+
+    if(keyColumnNum) {
+      for(let i = 0; i < values.length; i++) {
+        if(values[i][keyColumnNum] === keyValue) {
+          result.push(values[i]);
+        }
+      }
+    } else {
+      result = values.slice();
+      result.splice(0, 1);
+    }
     
     return result;
   }
@@ -39,5 +50,4 @@ class GoogleSheetDataAdapter {
       }
     }    
   }
-
 }

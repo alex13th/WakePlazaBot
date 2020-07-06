@@ -103,8 +103,11 @@ const strOptionsLabel = '<b>' + strOptions + ': </b>';
 
 const strRecord = 'Запись';
 
-const strReserveList = 'Список активных бронирований'
+const strReserveList = 'Список активных бронирований';
 const strReserveListHeader = '<b>' + strReserveList + ': </b>';
+
+const strMyReserveList = 'Список Ваших бронирований';
+const strMyReserveListHeader = '<b>' + strMyReserveList + ': </b>';
 
 const strDeleteList = 'Выберите бронирование для удаления:';
 const strDeleteListHeader = '<b>' + strReserveList + '</b>'

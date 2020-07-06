@@ -704,14 +704,37 @@ describe("class ReserveCallbackProcessor", function() {
       
       let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
       
-      let buttons = callbackProcessor.createCountButtons(12, 4);
+      let buttons = callbackProcessor.createCountButtons(12, 5);
       buttons.push([{text: strBackButton, callback_data: "back"}]);
       
       let keyboard = {inline_keyboard: buttons};
       let msgText = "<b>Список активных бронирований: </b>\n<b>04.07.2020</b>\n1.  10:00 - 10:05\n2.  11:30 - 11:40\n3.  12:00 - 12:10\n4.  12:00 - 12:05\n5.  13:00 - 13:05\n6.  13:00 - 13:15\n7.  14:00 - 14:05\n8.  15:00 - 15:05\n9.  16:00 - 16:05\n10.  17:00 - 17:10\n\n<b>06.07.2020</b>\n11.  15:00 - 15:05\n\n<b>07.07.2020</b>\n12.  10:00 - 10:05\n";
 
       callbackProcessor.proceedCallback("list");
+
       assert.equal(callbackProcessor.state.menu, 'list');
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.equal(callbackProcessor.callbackText, strReserveList);
+    });
+
+    it("Кнопка Мои бронирования ", function() {
+      let dataAdapter = new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      dataAdapter.getActiveReserveRows();
+      dataAdapter.spreadSheet.sheet.range.values = reserveValues;
+      
+      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      callbackProcessor.proceedCommand(null, {"id":143929127,"first_name":"Alexey","last_name":"Sukharev"});
+      
+      let buttons = callbackProcessor.createCountButtons(7, 5);
+      buttons.push([{text: strBackButton, callback_data: "back"}]);
+      
+      let keyboard = {inline_keyboard: buttons};
+      let msgText = "<b>Список Ваших бронирований: </b>\n<b>04.07.2020</b>\n1.  11:30 - 11:40\n2.  12:00 - 12:10\n3.  13:00 - 13:05\n4.  16:00 - 16:05\n5.  17:00 - 17:10\n\n<b>06.07.2020</b>\n6.  15:00 - 15:05\n\n<b>07.07.2020</b>\n7.  10:00 - 10:05\n";
+
+      callbackProcessor.proceedCallback("myList");
+
+      assert.equal(callbackProcessor.state.menu, 'myList');
       assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
       assert.equal(callbackProcessor.message.text, msgText);
       assert.equal(callbackProcessor.callbackText, strReserveList);

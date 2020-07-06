@@ -12,7 +12,6 @@ class WakeProcessor extends ReserveCallbackProcessor {
         this.state = new WakeReserveState();
     }
     
-    this.commandHandlers = {};
     this.commandHandlers['wake'] = this.cmdWake;
 
     this.menuHandlers['set'] = this.callSetMenu;
@@ -28,7 +27,7 @@ class WakeProcessor extends ReserveCallbackProcessor {
     this._cmd = cmd;
     this._user = user;
     return this.commandHandlers[cmd.name].apply(this);
-}
+  }
 
   cmdWake() {
     this.state = new WakeReserveState();
@@ -40,12 +39,23 @@ class WakeProcessor extends ReserveCallbackProcessor {
     
     let message = {};
     message.text = wakeHelloText;
-    message.keyboard = {inline_keyboard: 
-        [[{text: strBeginReserve, callback_data: 'book'}], 
-        [{text: strReserveList, callback_data: 'list'}]]};
+    message.keyboard  = {inline_keyboard: 
+      [[{text: strBeginReserve, callback_data: 'book'}], 
+      [{text: strMyReserveList, callback_data: 'myList'}], 
+      [{text: strReserveList, callback_data: 'list'}]]};;
     this.message = message;
 
     return result;
+  }
+
+  callMainButton() {
+    this.state.menu = 'main';
+    this.message.text = wakeHelloText;
+    this.message.keyboard = {inline_keyboard: 
+      [[{text: strBeginReserve, callback_data: 'book'}], 
+      [{text: strMyReserveList, callback_data: 'myList'}], 
+      [{text: strReserveList, callback_data: 'list'}]]};
+    this.callbackText = strMainMenu;
   }
 
   callApplyButton() {
@@ -59,15 +69,6 @@ class WakeProcessor extends ReserveCallbackProcessor {
     this.callbackText = strReserveComfirmed;
 
     this.state = new WakeReserveState();
-  }
-
-  callMainButton() {
-    this.state.menu = 'main';
-    this.message.text = wakeHelloText;
-    this.message.keyboard = {inline_keyboard: 
-      [[{text: strBeginReserve, callback_data: 'book'}], 
-      [{text: strReserveList, callback_data: 'list'}]]};
-    this.callbackText = strMainMenu;
   }
 
   callSetMenu(data) {

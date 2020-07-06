@@ -10,6 +10,8 @@ class ReserveCallbackProcessor {
         this.state = new ReserveState();
     }
 
+    this.commandHandlers = {};
+
     this.menuHandlers = {};
     this.menuHandlers['main'] = this.callMainMenu;
     this.menuHandlers['book'] = this.callBookMenu;
@@ -19,10 +21,13 @@ class ReserveCallbackProcessor {
     this.menuHandlers['count'] = this.callCountMenu;
     this.menuHandlers['list'] = this.callListMenu;
     this.menuHandlers['details'] = this.callDetailsMenu;
+    this.menuHandlers['myList'] = this.callMyListMenu;
+    this.menuHandlers['myDetails'] = this.callMyDetailsMenu;
 
     this.mainHandlers = {};
     this.mainHandlers['book'] = this.callBookButton;
     this.mainHandlers['list'] = this.callListButton;
+    this.mainHandlers['myList'] = this.callMyListButton;
 
     this.bookHandlers = {};
     this.bookHandlers['date'] = this.callDateButton;
@@ -30,6 +35,13 @@ class ReserveCallbackProcessor {
     this.bookHandlers['count'] = this.callCountButton;
     this.bookHandlers['apply'] = this.callApplyButton;
 
+  }
+
+  proceedCommand(cmd, user) {
+    this._cmd = cmd;
+    this._user = user;
+    if(cmd)
+      return this.commandHandlers[cmd.name].apply(this);
   }
 
   proceedCallback(data) {
@@ -173,14 +185,56 @@ class ReserveCallbackProcessor {
     let reserveArray = this.fillReserveArray();
 
     if(reserveArray) {
-      let rowSize = reserveArray.length < 10 ? 5 : 4;
-      buttons = this.createCountButtons(reserveArray.length, rowSize);
+      buttons = this.createCountButtons(reserveArray.length, 5);
     }
 
     buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
     this.state.menu = 'list';
-    this.message.text = this.getReserveListMessage();
+    this.message.text = strReserveListHeader + this.getReserveListMessage();
+    this.message.keyboard = {inline_keyboard: buttons};
+    this.callbackText = strReserveList;
+  }
+
+  callMyListMenu(data) {
+    if(data === 'back') {
+      this.callMainButton();
+    } else {
+      let keyField = this.state.reserve.fieldPositions['telegramId'];
+      let keyValue = this.state.reserve.telegramId;
+      let reserveRows = this.dataAdapter.getActiveReserveRows(keyField, keyValue);
+      let reserveArray = this.state.reserve.createReserveArray(reserveRows);
+      let reserve = reserveArray[data - 1];
+
+      let buttons = [];
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+
+      let msgText = reserve.getStateMessageText();
+      let keyboard = {inline_keyboard: buttons};
+  
+      this.state.menu = 'myDetails';
+      this.message.text = msgText;
+      this.message.keyboard = keyboard;
+      this.callbackText = strReserve;      
+    }
+  }
+
+  callMyListButton() {
+    let buttons = [];
+    let keyField = this.state.reserve.fieldPositions['telegramId'];
+    let keyValue = this.state.reserve.telegramId;
+
+    let reserveRows = this.dataAdapter.getActiveReserveRows(keyField, keyValue);
+    let reserveArray = this.state.reserve.createReserveArray(reserveRows);
+
+    if(reserveArray) {
+      buttons = this.createCountButtons(reserveArray.length, 5);
+    }
+
+    buttons.push([{text: strBackButton, callback_data: 'back'}]);
+
+    this.state.menu = 'myList';
+    this.message.text = strMyReserveListHeader + this.getReserveListMessage(reserveArray);
     this.message.keyboard = {inline_keyboard: buttons};
     this.callbackText = strReserveList;
   }
@@ -188,6 +242,12 @@ class ReserveCallbackProcessor {
   callDetailsMenu(data) {
     if(data === 'back') {
       this.callListButton();
+    }
+  }
+
+  callMyDetailsMenu(data) {
+    if(data === 'back') {
+      this.callMyListButton();
     }
   }
 
@@ -298,9 +358,11 @@ class ReserveCallbackProcessor {
     return reserveArray
   }
 
-  getReserveListMessage() {
-    let result = strReserveListHeader;
-    let reserveArray = this.fillReserveArray();
+  getReserveListMessage(reserveArray = null) {
+    let result = '';
+
+    if(!reserveArray)
+      reserveArray = this.fillReserveArray();
 
     if(!reserveArray || reserveArray.length < 0) {
       result += strNoBooksCaption;
