@@ -18,6 +18,7 @@ class ReserveCallbackProcessor {
     this.menuHandlers['minutes'] = this.callMinutesMenu;
     this.menuHandlers['count'] = this.callCountMenu;
     this.menuHandlers['list'] = this.callListMenu;
+    this.menuHandlers['details'] = this.callDetailsMenu;
 
     this.mainHandlers = {};
     this.mainHandlers['book'] = this.callBookButton;
@@ -62,13 +63,7 @@ class ReserveCallbackProcessor {
     this.state.menu = 'book';
 
     if(check) {
-
-      if(!this.state.reserve.reserveArray && this.dataAdapter) {
-        let reserveRows = this.dataAdapter.getActiveReserveRows();
-        let reserveArray = this.state.reserve.createReserveArray(reserveRows);
-        this.state.reserve.reserveArray = reserveArray;
-      }
-
+      this.fillReserveArray();
       this.state.reserve.findConflict();
     }
 
@@ -156,17 +151,44 @@ class ReserveCallbackProcessor {
   callListMenu(data) {
     if(data === 'back') {
       this.callMainButton();
+    } else {
+      let reserveArray = this.fillReserveArray();
+      let reserve = reserveArray[data - 1];
+
+      let buttons = [];
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+
+      let msgText = reserve.getStateMessageText();
+      let keyboard = {inline_keyboard: buttons};
+  
+      this.state.menu = 'details';
+      this.message.text = msgText;
+      this.message.keyboard = keyboard;
+      this.callbackText = strReserve;      
     }
   }
 
   callListButton() {
     let buttons = [];
+    let reserveArray = this.fillReserveArray();
+
+    if(reserveArray) {
+      let rowSize = reserveArray.length < 10 ? 5 : 4;
+      buttons = this.createCountButtons(reserveArray.length, rowSize);
+    }
+
     buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
     this.state.menu = 'list';
     this.message.text = this.getReserveListMessage();
     this.message.keyboard = {inline_keyboard: buttons};
     this.callbackText = strReserveList;
+  }
+
+  callDetailsMenu(data) {
+    if(data === 'back') {
+      this.callListButton();
+    }
   }
 
   createBookMenuKeyboard() {
@@ -243,14 +265,66 @@ class ReserveCallbackProcessor {
     return buttons;        
   }
 
-  createCountButtons() {
+  createCountButtons(count = 5, rowSize = 5) {
     let buttons = [] 
-    buttons.push([ {text: '1\ufe0f\u20e3', callback_data: '1'}, 
-      {text: '2\ufe0f\u20e3', callback_data: '2'}, 
-      {text: '3\ufe0f\u20e3', callback_data: '3'}, 
-      {text: '4\ufe0f\u20e3', callback_data: '4'}, 
-      {text: '5\ufe0f\u20e3', callback_data: '5'}]);
+    let buttonRow = [];
 
+    for(let i = 1; i <= count; i++) {
+      if(count < 10) {
+        buttonRow.push({text: i + '\ufe0f\u20e3', callback_data: i});
+      } else {
+        buttonRow.push({text: i, callback_data: i});
+      }
+  
+      if(i % rowSize == 0) {
+        buttons.push(buttonRow);
+        buttonRow = [];
+      }
+    }
+    if(buttonRow.length > 0) buttons.push(buttonRow);
+  
     return buttons;
+  }
+
+  fillReserveArray() {
+    let reserveArray = this.state.reserve.reserveArray;
+
+    if(!reserveArray && this.dataAdapter) {
+      let reserveRows = this.dataAdapter.getActiveReserveRows();
+      reserveArray = this.state.reserve.createReserveArray(reserveRows);
+      this.state.reserve.reserveArray = reserveArray;
+    }
+
+    return reserveArray
+  }
+
+  getReserveListMessage() {
+    let result = strReserveListHeader;
+    let reserveArray = this.fillReserveArray();
+
+    if(!reserveArray || reserveArray.length < 0) {
+      result += strNoBooksCaption;
+      return result;
+    }
+    
+    let listDate;
+    let bookNum;
+  
+    for(let i = 0; i < reserveArray.length; i++){
+      let row = '';
+      let reserve = reserveArray[i];
+      if((i === 0) || (reserve.start.getDate() != listDate.getDate() )) {
+        listDate = reserve.start;
+        bookNum = 0;
+        result += '\n<b>' + listDate.toLocaleDateString(dateLocale, dateOptions) + '</b>\n';
+      }
+      
+      bookNum++;
+      row += (i + 1) + '. ';
+      row += reserve.toRowString();
+  
+      result += row + '\n';
+    }
+    return result;
   }
 }

@@ -76,6 +76,9 @@ const strBeginReserveButton = 'Начать бронирование';
 const strReserve = 'Бронирование';
 const strReserveStateHeader = '<b>' + strReserve + ': </b>';
 
+const strNoBooks = 'Нет активных бронирований';
+const strNoBooksCaption = '<b>' + strNoBooks + '</b>\n';
+
 const strAttention = 'Внимание!';
 const strReserveConflict = '<b>' + strAttention.toUpperCase() + '</b>\nПересекается с бронированием:';
 

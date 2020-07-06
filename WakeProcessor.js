@@ -12,15 +12,8 @@ class WakeProcessor extends ReserveCallbackProcessor {
         this.state = new WakeReserveState();
     }
     
-    // if(dataAdapter) {
-    //   let reserveRows = dataAdapter.getActiveReserveRows();
-    //   let reserveArray = this.state.reserve.createReserveArray(reserveRows);
-    //   this.state.reserve.reserveArray = reserveArray;
-    // }
-
     this.commandHandlers = {};
     this.commandHandlers['wake'] = this.cmdWake;
-
 
     this.menuHandlers['set'] = this.callSetMenu;
     this.menuHandlers['hour'] = this.callHourMenu;
@@ -38,6 +31,7 @@ class WakeProcessor extends ReserveCallbackProcessor {
 }
 
   cmdWake() {
+    this.state = new WakeReserveState();
     this.state.reserve.telegramId = this._user.id;
     this.state.reserve.telegramName = tgParseUserName(this._user);
     this.state.menu = 'main';
@@ -157,37 +151,5 @@ class WakeProcessor extends ReserveCallbackProcessor {
     buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
     return {inline_keyboard: buttons};
-  }
-
-  getReserveListMessage() {
-    let result = strReserveListHeader;
-    let reserveRows = this.dataAdapter.getActiveReserveRows()
-
-    if(reserveRows.length <= 0) {
-      result += noBooksCaption + '\n';
-      result += noBooksFooter;
-      return result;
-    }
-    
-    let listDate;
-    let bookNum;
-    let reserve = new WakeReserve();
-  
-    for(let i = 0; i < reserveRows.length; i++){
-      let row = '';
-      reserve.fromArray(reserveRows[i]);
-      if((i === 0) || (reserve.start.getDate() != listDate.getDate() )) {
-        listDate = reserve.start;
-        bookNum = 0;
-        result += '\n<b>' + listDate.toLocaleDateString(dateLocale, dateOptions) + '</b>\n';
-      }
-      
-      bookNum++;
-      row += (i + 1) + '. ';
-      row += reserve.toRowString();
-  
-      result += row + '\n';
-    }
-    return result;
   }
 }
