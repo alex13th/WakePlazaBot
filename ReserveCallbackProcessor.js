@@ -40,6 +40,11 @@ class ReserveCallbackProcessor {
   proceedCommand(cmd, user) {
     this._cmd = cmd;
     this._user = user;
+    if(user) {
+      this.state.reserve.telegramId = user.id;
+      this.state.reserve.telegramName = tgParseUserName(this._user);
+    }
+
     if(cmd)
       return this.commandHandlers[cmd.name].apply(this);
   }
