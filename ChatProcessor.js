@@ -114,5 +114,5 @@ class ChatProcessor {
   saveState() {
     if(this._state)
       this._properties.setProperty(this.chatId, this._state.toJSON());
-}
+  }
 }
