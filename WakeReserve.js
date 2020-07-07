@@ -47,9 +47,9 @@ class WakeReserve extends Reserve {
     let result = '';
     let confictReserve = this.findConflict();
 
-    if(confictReserve) {
+    if(this.conflictReserve.length >= this.maxConfictCount) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + confictReserve.toString() + '\n';
+      result += '\n' + stopIcon + confictReserve.toString();
     }
 
     if(this.telegramName)
@@ -57,7 +57,8 @@ class WakeReserve extends Reserve {
     result += '\n' + strDayLabel + this.start.toLocaleDateString(dateLocale, dateOptions);
 
     if(this.startTime) {
-      result += '\n' + strTimeLabel + this.startTime;
+      result += '\n' + strStartTimeLabel + this.startTime;
+      result += '\n' + strEndTimeLabel + this.endTime;
     }
 
     result += '\n' + strTypeLabel + wakeReserveTypeNames[this.setType];

@@ -5,7 +5,8 @@ class Reserve {
       start.setHours(0, 0, 0, 0);
     }
 
-    this.conflictReserve = null;
+    this.conflictReserve = [];
+    this.maxConfictCount = 1;
     this.fieldPositions = {};
 
     this.createdAt = new Date();
@@ -51,13 +52,13 @@ class Reserve {
   }
 
   get isCompleted() {
-    return this.count && this.startTime && !this.conflictReserve;
+    return this.count && this.startTime && (this.conflictReserve.length < this.maxConfictCount);
   }
 
   toString() {
     let result = '<b>' + this.start.toLocaleDateString(dateLocale, dateOptions) + ':</b> ';
 
-    result += this.toRowString();
+    result += this.toRowString() + '\n';
 
     return result;
   }
@@ -74,7 +75,8 @@ class Reserve {
   }
 
   findConflict() {
-    let result = null;
+    let result = [];
+    let conflictCount = 0;
 
     if(this.reserveArray) {
       for(let i = 0; i < this.reserveArray.length; i++) {
@@ -83,23 +85,47 @@ class Reserve {
         if(this.start.getTime() === reserve.start.getTime() || 
           this.end.getTime() === reserve.end.getTime() ) {
 
-          result = reserve;
-          break;
+          conflictCount++;
+          result.push(reserve);
+
+          if(conflictCount >= this.maxConfictCount) {
+            break;
+          } else {
+            continue;
+          }
         }
 
         if(this.start > reserve.start && this.start < reserve.end) {
-          result = reserve;
-          break;
+          conflictCount++;
+          result.push(reserve);
+
+          if(conflictCount >= this.maxConfictCount) {
+            break;
+          } else {
+            continue;
+          }
         }
 
         if(this.end > reserve.start && this.end < reserve.end) {
-          result = reserve;
-          break;
+          conflictCount++;
+          result.push(reserve);
+
+          if(conflictCount >= this.maxConfictCount) {
+            break;
+          } else {
+            continue;
+          }
         }
 
         if(this.start < reserve.start && this.end > reserve.start) {
-          result = reserve;
-          break;
+          conflictCount++;
+          result.push(reserve);
+
+          if(conflictCount >= this.maxConfictCount) {
+            break;
+          } else {
+            continue;
+          }
         }
       }
     }
@@ -111,16 +137,17 @@ class Reserve {
   getStateMessageText() {
     let result = '';
 
-    if(this.conflictReserve) {
+    if(this.conflictReserve.length >= this.maxConfictCount) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + this.conflictReserve.toString() + '\n';
+      result += '\n' + stopIcon + this.conflictReserve.toString();
     }
 
     if(this.telegramName)
       result += '\n' + strNameLabel + this.telegramName;
     result += '\n' + strDayLabel + this.start.toLocaleDateString(dateLocale, dateOptions);
     if(this.startTime) {
-      result += '\n' + strTimeLabel + this.startTime;
+      result += '\n' + strStartTimeLabel + this.startTime;
+      result += '\n' + strEndTimeLabel + this.endTime;
     }
     
     result += '\n' + strCountLabel + this.count;

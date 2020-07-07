@@ -100,6 +100,12 @@ const strDayLabel = '<b>' + strDay + ': </b>';
 const strTime = 'Время';
 const strTimeLabel = '<b>' + strTime + ': </b>';
 
+const strStartTime = 'Начало';
+const strStartTimeLabel = '<b>' + strStartTime + ': </b>';
+
+const strEndTime = 'Окончание';
+const strEndTimeLabel = '<b>' + strEndTime + ': </b>';
+
 const strOptions = 'Опции';
 const strOptionsLabel = '<b>' + strOptions + ': </b>';
 

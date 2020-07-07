@@ -127,7 +127,7 @@ describe("class Reserve", function() {
 
     it("Свойство toString", function() {
       let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
-      let str = '<b>' + dateStr + ':</b> ';
+      let str = '<b>' + dateStr + ':</b> \n';
 
       assert.equal(reserve.toString(), str, str);
     });
@@ -185,7 +185,7 @@ describe("class Reserve", function() {
         let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
         let str = '<b>' + dateStr + ':</b> ';
         str += ' ' + reserve.start.toLocaleTimeString(dateLocale, timeOptions);
-        str += ' - ' + reserve.end.toLocaleTimeString(dateLocale, timeOptions);
+        str += ' - ' + reserve.end.toLocaleTimeString(dateLocale, timeOptions) + '\n';
 
         assert.equal(reserve.toString(), str, str);
     });
@@ -194,10 +194,9 @@ describe("class Reserve", function() {
       let str = "";
       str += "\n" + strNameLabel + "Misha V";
       str += "\n" + strDayLabel + startDateTime.toLocaleDateString(dateLocale, dateOptions);
-      str += "\n" + strTimeLabel + "13:50";
-      str += "\n" + strCountLabel + "5";
+      str += "\n<b>Начало: </b>13:50\n<b>Окончание: </b>14:15\n<b>Количество: </b>5";
 
-      assert.equal(reserve.getStateMessageText(), str, str);
+      assert.equal(reserve.getStateMessageText(), str);
     });
 
     it("Метод findConflict()", function() {
@@ -210,7 +209,9 @@ describe("class Reserve", function() {
       let reserveRows = dataAdapter.getActiveReserveRows();
       let reserveArray = reserve.createReserveArray(reserveRows);
       reserve.reserveArray = reserveArray;
-      assert.equal(reserve.findConflict(), reserveArray[6]);
+
+      let conflictArray = reserve.findConflict();
+      assert.deepEqual(conflictArray, [reserveArray[6]]);
     });
   });
 
@@ -235,32 +236,32 @@ describe("class Reserve", function() {
       startDateTime.setHours(13, 30, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 2;
-      assert.isNull(reserve.findConflict());
+      assert.equal(reserve.findConflict().length, 0);
     });
 
     it("Начало меньше начала, окончание равно началу (null)", function() {
       startDateTime.setHours(13, 30, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 6;
-      assert.isNull(reserve.findConflict());
+      assert.equal(reserve.findConflict().length, 0);
     });
 
     it("Начало равно окончания (null)", function() {
       startDateTime.setHours(15, 0, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 6;
-      assert.isNull(reserve.findConflict());
+      assert.equal(reserve.findConflict().length, 0);
     });
 
     it("Начало больше окончания (null)", function() {
       startDateTime.setHours(15, 30, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 6;
-      assert.isNull(reserve.findConflict(), );
+      assert.equal(reserve.findConflict().length, 0);
     });
 
     it("Метод getStateMessageText() без ошибки", function() {
-      let str = "\n<b>Имя: </b>Misha V\n<b>Дата: </b>04.07.2020\n<b>Время: </b>15:30\n<b>Количество: </b>6";
+      let str = "\n<b>Имя: </b>Misha V\n<b>Дата: </b>04.07.2020\n<b>Начало: </b>15:30\n<b>Окончание: </b>16:00\n<b>Количество: </b>6";
 
       assert.equal(reserve.getStateMessageText(), str);
     });
@@ -269,32 +270,32 @@ describe("class Reserve", function() {
       startDateTime.setHours(13, 50, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 6;
-      assert.equal(reserve.findConflict(), reserveArray[0]);
+      assert.deepEqual(reserve.findConflict(), [reserveArray[0]]);
     });
 
     it("Начало больше начала, начало меньше окончания (Reserve)", function() {
       startDateTime.setHours(14, 50, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 30;
-      assert.equal(reserve.findConflict(), reserveArray[0]);
+      assert.deepEqual(reserve.findConflict(), [reserveArray[0]]);
     });
 
     it("Начало равно началу (Reserve)", function() {
       startDateTime.setHours(14, 00, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 6;
-      assert.equal(reserve.findConflict(), reserveArray[0]);
+      assert.deepEqual(reserve.findConflict(), [reserveArray[0]]);
     });
 
     it("Окончание равно окончанию (Reserve)", function() {
       startDateTime.setHours(13, 30, 0, 0);
       reserve.start = startDateTime;
       reserve.count = 18;
-      assert.equal(reserve.findConflict(), reserveArray[0]);
+      assert.deepEqual(reserve.findConflict(), [reserveArray[0]]);
     });
 
     it("Метод getStateMessageText() с ошибкой", function() {
-      let str = "\n<b>ВНИМАНИЕ!</b>\nПересекается с бронированием:\n⛔️<b>04.07.2020:</b>  14:00 - 15:00\n\n<b>Имя: </b>Misha V\n<b>Дата: </b>04.07.2020\n<b>Время: </b>13:30\n<b>Количество: </b>18";
+      let str = "\n<b>ВНИМАНИЕ!</b>\nПересекается с бронированием:\n⛔️<b>04.07.2020:</b>  14:00 - 15:00\n\n<b>Имя: </b>Misha V\n<b>Дата: </b>04.07.2020\n<b>Начало: </b>13:30\n<b>Окончание: </b>15:00\n<b>Количество: </b>18";
 
       assert.equal(reserve.getStateMessageText(), str);
     });
@@ -451,7 +452,7 @@ describe("class WakeReserve", function() {
       wakeReserve.board = 1;
       wakeReserve.hydro = 1;
       
-      it("Проверка свойства toString", function() {
+      it("Метод toString", function() {
           let dateStr = wakeReserve.start.toLocaleDateString(dateLocale, dateOptions);
           let str = '<b>' + dateStr + ':</b>';
           str += ' ' + setIcon;
@@ -459,19 +460,21 @@ describe("class WakeReserve", function() {
           str += ' - ' + wakeReserve.end.toLocaleTimeString(dateLocale, timeOptions);
           str += ' ' + boardIcon;
           str += ' ' + hydroIcon;
+          str += '\n';
           assert.equal(wakeReserve.toString(), str);
       });
 
-      it("Проверка свойства getStateMessageText", function() {
+      it("Метод getStateMessageText", function() {
           let str = "";
           str += "\n" + strNameLabel + "Misha V";
           str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
-          str += "\n" + strTimeLabel + "12:50";
+          str += "\n" + strStartTimeLabel + "12:50";
+          str += "\n" + strEndTimeLabel + "13:10";
           str += "\n" + strTypeLabel + strSet;
           str += "\n" + strCountLabel + "2";
           str += "\n" + strOptionsLabel + boardIcon + hydroIcon;
 
-          assert.equal(wakeReserve.getStateMessageText(), str, str);
+          assert.equal(wakeReserve.getStateMessageText(), str);
       });
   });
 
@@ -506,7 +509,7 @@ describe("class WakeReserve", function() {
 
     it("Метод toString()", function() {
       let dateStr = wakeReserve.start.toLocaleDateString(dateLocale, dateOptions);
-      let str = '<b>' + dateStr + ':</b> ';
+      let str = '<b>' + dateStr + ':</b> \n';
 
       assert.equal(wakeReserve.toString(), str, str);
     });
@@ -533,7 +536,7 @@ describe("class WakeReserve", function() {
       let reserveArray = reserve.createReserveArray(reserveRows);
       reserve.reserveArray = reserveArray;
       let conflictReserve = reserve.findConflict();
-      assert.equal(conflictReserve, reserveArray[6]);
+      assert.deepEqual(conflictReserve, [reserveArray[6]]);
     });
   });
 
@@ -605,7 +608,7 @@ describe("class SupReserve", function() {
   describe("Проверка строковых методов", function() {
     let startDateTime = new Date();
     startDateTime.setHours(12, 50, 0, 0);
-    let reserve = new WakeReserve(329454218, "Misha V", startDateTime, 2, "set");
+    let reserve = new SupReserve(329454218, "Misha V", startDateTime, 2, "set");
     
     it("Проверка свойства toString", function() {
       let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
@@ -613,6 +616,8 @@ describe("class SupReserve", function() {
       str += ' ' + setIcon;
       str += ' ' + reserve.start.toLocaleTimeString(dateLocale, timeOptions);
       str += ' - ' + reserve.end.toLocaleTimeString(dateLocale, timeOptions);
+      str += '\n';
+
       assert.equal(reserve.toString(), str);
     });
 
@@ -620,11 +625,11 @@ describe("class SupReserve", function() {
       let str = "";
       str += "\n" + strNameLabel + "Misha V";
       str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
-      str += "\n" + strTimeLabel + "12:50";
-      str += "\n" + strTypeLabel + strSet;
-      str += "\n" + strCountLabel + "2";
+      str += "\n" + strStartTimeLabel + "12:50";
+      str += "\n" + strEndTimeLabel + "13:50";
+      str += "\n" + strTypeLabel + strSet + ' (2)';
 
-      assert.equal(reserve.getStateMessageText(), str, str);
+      assert.equal(reserve.getStateMessageText(), str);
     });
   });
 
@@ -659,13 +664,13 @@ describe("class SupReserve", function() {
 
     it("Метод toString()", function() {
       let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
-      let str = '<b>' + dateStr + ':</b> ';
+      let str = '<b>' + dateStr + ':</b> \n';
 
       assert.equal(reserve.toString(), str);
     });
     
     it("Метод getStateMessageText()", function() {
-      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>Сет\n<b>Количество: </b>1";
+      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>Сет (1)";
 
       assert.equal(reserve.getStateMessageText(), str);
     });

@@ -1,10 +1,12 @@
 const supReserveTypeSizes = {'set': 30, 'hour': 60};
 const supReserveTypeNames = {'set': strSet, 'hour': strHour};
+const supCount = 4;
 
 class SupReserve  extends Reserve {
   constructor(telegramId, telegramName, start = null, count = 1, setType = 'set') {
     super(telegramId, telegramName, start, count);
     this.setType = setType;
+    this.maxConfictCount = supCount;
 
     // Array's field positions
     this.fieldPositions['createdAt'] = 0;
@@ -21,13 +23,26 @@ class SupReserve  extends Reserve {
     return supReserveTypeSizes[this.setType] * this.count;
   }
 
+  toRowString() {
+    let result = '';
+
+    if(this.startTime) {
+      result += (this.setType === 'set') ? setIcon : hourIcon;
+      result += ' ' + this.startTime;
+      result += ' - ' + this.endTime;
+    }
+
+    return result;
+  }
+  
+
   getStateMessageText() {
     let result = '';
     let confictReserve = this.findConflict();
 
-    if(confictReserve) {
+    if(this.conflictReserve.length >= this.maxConfictCount) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + confictReserve.toString() + '\n';
+      result += '\n' + stopIcon + confictReserve.toString();
     }
 
     if(this.telegramName)
@@ -35,11 +50,12 @@ class SupReserve  extends Reserve {
     result += '\n' + strDayLabel + this.start.toLocaleDateString(dateLocale, dateOptions);
 
     if(this.startTime) {
-      result += '\n' + strTimeLabel + this.startTime;
+      result += '\n' + strStartTimeLabel + this.startTime;
+      result += '\n' + strEndTimeLabel + this.endTime;
     }
 
     result += '\n' + strTypeLabel + wakeReserveTypeNames[this.setType];
-    result += '\n' + strCountLabel + this.count;
+    result += ' ('  + this.count + ')';
 
     return result;
   }
