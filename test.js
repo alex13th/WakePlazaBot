@@ -569,6 +569,154 @@ describe("class WakeReserve", function() {
   });
 })
 
+describe("class SupReserve", function() {
+  describe("Проверка инициализации свойств", function() {
+    let startDateTime = new Date();
+    startDateTime.setHours(12, 50, 0, 0);
+    let reserve = new SupReserve(329454218, "Misha V", startDateTime, 2, "set");
+
+    it("Проверка свойства count", function() {
+      assert.equal(reserve.count, 2, "равен 2");
+    });
+
+    it("Проверка свойства setType", function() {
+      assert.equal(reserve.setType, "set");
+    });
+
+    it("Проверка свойства minutes", function() {
+      assert.equal(reserve.minutes, 60);
+    });
+
+  it("Проверка установки свойства setType", function() {
+      reserve.setType = "hour";
+      assert.equal(reserve.setType, "hour");
+    });
+
+    it("Проверка свойства startDate", function() {
+      assert.equal(reserve.start, startDateTime);
+    });
+
+    it("Проверка свойства endDate", function() {
+      let endDateTime = new Date();
+      endDateTime.setHours(14, 50, 0, 0);
+      assert.deepEqual(reserve.end, endDateTime);
+    });
+  });
+  describe("Проверка строковых методов", function() {
+    let startDateTime = new Date();
+    startDateTime.setHours(12, 50, 0, 0);
+    let reserve = new WakeReserve(329454218, "Misha V", startDateTime, 2, "set");
+    
+    it("Проверка свойства toString", function() {
+      let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
+      let str = '<b>' + dateStr + ':</b>';
+      str += ' ' + setIcon;
+      str += ' ' + reserve.start.toLocaleTimeString(dateLocale, timeOptions);
+      str += ' - ' + reserve.end.toLocaleTimeString(dateLocale, timeOptions);
+      assert.equal(reserve.toString(), str);
+    });
+
+    it("Проверка свойства getStateMessageText", function() {
+      let str = "";
+      str += "\n" + strNameLabel + "Misha V";
+      str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
+      str += "\n" + strTimeLabel + "12:50";
+      str += "\n" + strTypeLabel + strSet;
+      str += "\n" + strCountLabel + "2";
+
+      assert.equal(reserve.getStateMessageText(), str, str);
+    });
+  });
+
+  describe("Проверка свойств по умолчанию", function() {
+    let reserve = new SupReserve();
+
+    it("Свойство count", function() {
+      assert.equal(reserve.count, 1);
+    });
+
+    it("Свойство setType", function() {
+      assert.equal(reserve.setType, "set");
+    });
+
+    it("Свойство startDate", function() {
+      assert.deepEqual(reserve.start, today);
+    });
+
+    it("Свойство minutes", function() {
+      assert.equal(reserve.minutes, 30);
+    });
+
+    it("Свойство minutes", function() {
+      assert.isNull(reserve.startTime);
+    });
+
+    it("Свойство endDate", function() {
+      let endDateTime = new Date();
+      endDateTime.setHours(0, 30, 0, 0);
+      assert.deepEqual(reserve.end, endDateTime);
+    });
+
+    it("Метод toString()", function() {
+      let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
+      let str = '<b>' + dateStr + ':</b> ';
+
+      assert.equal(reserve.toString(), str);
+    });
+    
+    it("Метод getStateMessageText()", function() {
+      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>Сет\n<b>Количество: </b>1";
+
+      assert.equal(reserve.getStateMessageText(), str);
+    });
+    
+    it("Метод createReserveArray()", function() {
+      let reserve = new SupReserve();
+      startDateTime = new Date(2020, 06, 04);
+      startDateTime.setHours(13, 50, 0, 0);
+
+      reserve.start = startDateTime;
+      reserve.count = 2;
+
+      let dataAdapter = new GoogleSheetDataAdapter("sup", ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let reserveRows = dataAdapter.getActiveReserveRows();
+      let reserveArray = reserve.createReserveArray(reserveRows);
+      reserve.reserveArray = reserveArray;
+      // let conflictReserve = reserve.findConflict();
+      // assert.equal(conflictReserve, reserveArray[6]);
+    });
+  });
+
+  describe("Проверка экспорта свойств в массив", function() {
+    let reserve;
+    let reserveRow;
+    let exportRow;
+
+    it("Создание экземпляра", function() {
+      reserve = new SupReserve();
+    });
+
+    it("Заполнение свойств из массива", function() {
+      reserveRow = [new Date(),329454218,"Misha V",new Date("07.06.2020 10:00:00"),new Date("07.06.2020 12:00:00"),"hour",2];
+      reserve.fromArray(reserveRow);
+    });
+
+    it("Экспорт свойств в массив", function() {
+      exportRow = reserve.toArray(reserveRow);
+    });
+
+    it("Сверка массивов", function() {
+      assert.deepEqual(exportRow[0], reserveRow[0]);
+      assert.equal(exportRow[1], reserveRow[1]);
+      assert.equal(exportRow[2], reserveRow[2]);
+      assert.deepEqual(exportRow[3], reserveRow[3]);
+      assert.deepEqual(exportRow[4], reserveRow[4]);
+      assert.equal(exportRow[5], reserveRow[5]);
+      assert.equal(exportRow[6], reserveRow[6]);
+    });
+  });
+})
+
 describe("class WakeReserveState", function() {
   describe("Проверка свойств по умолчанию", function() {
     let reserve = new WakeReserve(329454218, "Misha V");
@@ -622,6 +770,66 @@ describe("class WakeReserveState", function() {
       let reserve = new WakeReserve(329454218, "Misha V", today, 2);
       reserve.createdAt = newDate;
       reserve.board = 1;
+      reserve.setType = "hour";
+      assert.deepEqual(reserveState.reserve, reserve);
+    });
+  });
+});
+
+describe("class SupReserveState", function() {
+  describe("Проверка свойств по умолчанию", function() {
+    let reserve;
+    let reserveState;
+
+    it("Создание экземпляра", function() {
+      reserve = new SupReserve(329454218, "Misha V");
+      reserveState = new SupReserveState(reserve);
+      });
+
+    it("Проверка свойства type", function() {
+      assert.equal(reserveState.type, 'sup');
+    });
+
+    it("Проверка свойства menu", function() {
+      assert.equal(reserveState.menu, 'main');
+    });
+
+    it("Проверка свойства reserve", function() {
+      assert.instanceOf(reserveState.reserve, SupReserve);
+    });
+
+    it("Проверка сериализации в JSON", function() {
+      let jsonState = '{"type":"sup","menu":"main","createdAt":';
+      jsonState += reserve.createdAt.getTime();
+      jsonState += ',"telegramId":329454218,"telegramName":"Misha V","start":1594051200000,"count":1,"set_type":"set"}';
+      
+      assert.equal(reserveState.toJSON(), jsonState);
+    });
+  });
+
+  describe("Проверка создания из JSON", function() {
+    let newDate =  new Date();
+    let jsonState = '{"type":"sup","menu":"main",';
+    jsonState += '"createdAt":' + newDate.getTime() + ',';
+    jsonState += '"telegramId":329454218' + ',';
+    jsonState += '"telegramName":"Misha V"' + ',';
+    jsonState += '"start":' + today.getTime() + ',"count":2,';
+    jsonState += '"set_type":"hour"}';
+
+    let reserveState = new SupReserveState();
+    reserveState.fromJSON(jsonState);
+
+    it("Проверка свойства type", function() {
+      assert.equal(reserveState.type, 'sup');
+    });
+
+    it("Проверка свойства menu", function() {
+      assert.equal(reserveState.menu, 'main');
+    });
+
+    it("Проверка свойства reserve", function() {
+      let reserve = new SupReserve(329454218, "Misha V", today, 2);
+      reserve.createdAt = newDate;
       reserve.setType = "hour";
       assert.deepEqual(reserveState.reserve, reserve);
     });
@@ -698,7 +906,7 @@ describe("class ReserveCallbackProcessor", function() {
     });
 
     it("Кнопка Список активных бронирований ", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -719,7 +927,7 @@ describe("class ReserveCallbackProcessor", function() {
     });
 
     it("Кнопка Мои бронирования ", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -741,7 +949,7 @@ describe("class ReserveCallbackProcessor", function() {
     });
 
     it("Кнопка с номером бронирования", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -919,7 +1127,7 @@ describe("class WakeProcessor", function() {
     });
 
     describe("Обработка пунктов меню", function() {
-      let callbackProcessor = new WakeProcessor(new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, 
+      let callbackProcessor = new WakeProcessor(new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, 
         ENTRY_SHEET_NAME, LIST_SHEET_NAME));
       callbackProcessor.state.menu = "book";
 
@@ -1041,6 +1249,133 @@ describe("class WakeProcessor", function() {
             assert.equal(callbackProccessor.callbackText, strRemoveHydro);
         });
     });
+});
+
+describe("class SupProcessor", function() {
+  describe("Свойства объекта по умолчанию", function() {
+    let callbackProccessor;
+
+    it("Создание экземпляра", function() {
+      callbackProccessor = new SupProcessor();
+    });
+
+    it("Проверка типа состояния", function() {
+      assert.equal(callbackProccessor.state.type, 'sup');
+    });
+
+    it("Проверка меню состояния", function() {
+      assert.equal(callbackProccessor.state.menu, 'main');
+    });
+  });
+  
+  describe("Обработка главного меню", function() {
+    it("Проверка обработки кнопки Начать бронирование ", function() {
+      let callbackProcessor = new SupProcessor();
+
+      let keyboard = callbackProcessor.createBookMenuKeyboard();
+      let msgText = strReserveStateHeader + callbackProcessor.state.reserve.getStateMessageText();
+        
+      callbackProcessor.proceedCallback("book");
+
+      assert.equal(callbackProcessor.state.type, "sup");
+      assert.equal(callbackProcessor.state.menu, "book");
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+    });
+  });
+
+  describe("Обработка пунктов меню", function() {
+    let callbackProcessor;
+
+    it("Создание экземпляра", function() {
+      callbackProcessor = new SupProcessor(new GoogleSheetDataAdapter(SUP_SPREAD_SHEET, 
+        ENTRY_SHEET_NAME, LIST_SHEET_NAME));
+        callbackProcessor.state.menu = "book";
+      });
+
+    it("Кнопка Сет", function() {
+      let buttons = callbackProcessor.createCountButtons();
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+      let keyboard = {inline_keyboard: buttons};
+      let msgText = callbackProcessor.message.text;
+
+      callbackProcessor.proceedCallback("set");
+
+      assert.equal(callbackProcessor.state.menu, "set");
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.callbackText, strSet);
+    });
+
+    it("Кнопка Час", function() {
+      let buttons = callbackProcessor.createCountButtons();
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+
+      let keyboard = {inline_keyboard: buttons};
+      let msgText = callbackProcessor.message.text;
+
+      callbackProcessor.state.menu = "book";
+
+      callbackProcessor.proceedCallback("hour");
+
+      assert.equal(callbackProcessor.state.menu, "hour");
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.callbackText, strHour);
+    });
+
+    it("Обработка кнопки Забронировать", function() {
+      let reserveRow = callbackProcessor.state.reserve.toArray();
+      callbackProcessor.state.menu = "book";
+
+      let buttons = callbackProcessor.createCountButtons();
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+
+      let keyboard = null;
+
+      let msgText = strReserveComfirmedHeader;
+      msgText += callbackProcessor.state.reserve.getStateMessageText();
+
+      callbackProcessor.proceedCallback("apply");
+      reserveRows = callbackProcessor.dataAdapter.getActiveReserveRows();
+
+      assert.equal(callbackProcessor.state.menu, "main");
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.callbackText, strReserveComfirmed);
+      assert.deepEqual(reserveRows[reserveRows.length - 1], reserveRow);
+    });
+  });
+
+  describe("Проверка изменения данных", function() {
+      let callbackProccessor = new SupProcessor();
+
+      it("Проверка изменения Сет", function() {
+          let keyboard = callbackProccessor.createBookMenuKeyboard();
+          callbackProccessor.state.menu = "set";
+
+          callbackProccessor.proceedCallback(4);
+
+          assert.equal(callbackProccessor.state.menu, "book");
+          assert.deepEqual(callbackProccessor.message.keyboard, keyboard);
+          assert.equal(callbackProccessor.state.reserve.count, 4);
+          assert.equal(callbackProccessor.state.reserve.setType, "set");
+          assert.equal(callbackProccessor.callbackText, strSet + ": 4");
+      });
+
+      it("Проверка изменения Час", function() {
+          let keyboard = callbackProccessor.createBookMenuKeyboard();
+          callbackProccessor.state.menu = "hour";
+
+          callbackProccessor.proceedCallback(2);
+
+          assert.equal(callbackProccessor.state.menu, "book");
+          assert.deepEqual(callbackProccessor.message.keyboard, keyboard);
+          assert.equal(callbackProccessor.state.reserve.count, 2);
+          assert.equal(callbackProccessor.state.reserve.setType, "hour");
+          assert.equal(callbackProccessor.callbackText, strHour + ": 2");
+      });
+  });
 });
 
 describe("class ChatProcessor", function() {
@@ -1180,9 +1515,9 @@ describe("class GoogleSheetDataAdapter", function() {
   describe("Создание объекта доступа к данным", function() {
       
     it("Создание экземпляра", function() {
-      dataAdapter = new GoogleSheetDataAdapter(GOOGLE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
 
-      assert.equal(dataAdapter.spreadSheetId, GOOGLE_SPREAD_SHEET);
+      assert.equal(dataAdapter.spreadSheetId, WAKE_SPREAD_SHEET);
       assert.equal(dataAdapter.entrySheetName, ENTRY_SHEET_NAME);
       assert.equal(dataAdapter.listSheetName, LIST_SHEET_NAME);
     });

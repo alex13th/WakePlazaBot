@@ -1,11 +1,10 @@
-const GOOGLE_SPREAD_SHEET = '1rQa0RHidmFaG_ANaS11RI7sO1InUBWqns7gGhYWLE7I';
 const ENTRY_SHEET_NAME = 'Telegram';
 const LIST_SHEET_NAME = 'TelegramView';
 const publicChannel = '@DevWakeChannel';
 
 let helpText = '<b>Список команд</b>';
 helpText += '\n/wake - забронировать катание на Вейкборде;';
-// helpText += '\n/sup - забронировать Сапборд;';
+helpText += '\n/sup - забронировать Сапборд;';
 helpText += '\n/help - справка по командам бота.'
 
 let helloText = '<b>Привет!</b>';
@@ -15,6 +14,9 @@ helloText += '\n\n' + helpText;
 
 let wakeHelloText  = '<b>Вейкборд - великолепный выбор!</b>';
 wakeHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
+
+let supHelloText   = '<b>Сапборд - современно и душевно!</b>';
+supHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
 
 //const scriptProperties = PropertiesService.getScriptProperties();
 
