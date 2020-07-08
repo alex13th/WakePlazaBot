@@ -11,6 +11,9 @@ helloText += '\nЭто наш новый сервис для бронирова�
 helloText += 'Сейчас он находится в процессе тестирования, но вполне работоспособен.';
 helloText += '\n\n' + helpText;
 
+let noticeText = 'Для подтверждения вашего бронирования просим вас ';
+noticeText += 'связаться по телефону с администратором WAKEPLAZA 922-111.';
+
 let wakeHelloText  = '<b>Вейкборд - великолепный выбор!</b>';
 wakeHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
 
@@ -37,6 +40,7 @@ const applyIcon = '\ud83d\udc4c';
 const beginIcon = '\ud83d\udc49';
 const stopIcon = '\u26d4\ufe0f'
 const cancelIcon = '\u274c';
+const noticeIcon = '\u2139\ufe0f';
 // Icons
 
 // Locale string definitions
@@ -124,6 +128,9 @@ const strDeleted = 'Запись удалена';
 
 const strCancel = 'Отменить';
 const strCancelButton = cancelIcon + ' ' + strCancel;
+
+const strNotice = 'Оповещение об уточнении';
+const strNoticeButton = noticeIcon + ' ' + strNotice;
 // Locale string definitions
 
 // Set type button definitions

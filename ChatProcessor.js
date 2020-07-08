@@ -106,6 +106,10 @@ class ChatProcessor {
         tgEditMessage(this._message, processor.message.text, processor.message.keyboard);
       }
 
+      if(processor.notice.chatId) {
+        tgPostMessage(processor.notice.chatId, processor.notice.text);
+      }
+
       tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);
     }
 

@@ -2,9 +2,11 @@ class ReserveProcessor {
   constructor(dataAdapter, state) {
     this.callbackText = '';
     this.message = {};
+    this.notice = {};
     this.dataAdapter = dataAdapter;
     this.admins = [744947445, 329454218, 586350636, 317821671];
 
+    
     if(state) {
         this.state = new ReserveState(state);
     } else {
@@ -38,6 +40,7 @@ class ReserveProcessor {
 
     this.detailsHandlers = {};
     this.detailsHandlers['cancel'] = this.callCancelButton;
+    this.detailsHandlers['notice'] = this.callNoticeButton;
   }
 
   proceedCommand(cmd, user) {
@@ -183,6 +186,11 @@ class ReserveProcessor {
         button.text = strCancelButton;
         button.callback_data = 'cancel-' + reserve.createdAt.getTime();
         buttons.push([button]);
+
+        button = {};
+        button.text = strNoticeButton;
+        button.callback_data = 'notice-' + reserve.telegramId;
+        buttons.push([button]);
       }
       buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
@@ -283,6 +291,14 @@ class ReserveProcessor {
     this.callbackText = strDeleted + ': ';
     this.callbackText += cancelDate.toLocaleDateString(dateLocale, dateOptions) + ' ';
     this.callbackText += cancelDate.toLocaleTimeString(dateLocale, timeOptions);
+  }
+
+  callNoticeButton(data) {
+    this.callListButton();
+    this.notice.text = noticeText;
+    this.notice.chatId = data;
+
+    this.callbackText = strNotice + ': ' + data;
   }
 
   createBookMenuKeyboard() {
