@@ -72,7 +72,7 @@ class GoogleSheet {
     }
 
     deleteRow(pos) {
-      return this.range.values.splice(pos, 1);
+      return this.range.values.splice(pos - 1, 1);
     }
 }
 
@@ -663,14 +663,16 @@ describe("class SupReserve", function() {
     });
 
     it("Метод toString()", function() {
-      let dateStr = reserve.start.toLocaleDateString(dateLocale, dateOptions);
+      let dateStr = today.toLocaleDateString(dateLocale, dateOptions);
       let str = '<b>' + dateStr + ':</b> \n';
 
       assert.equal(reserve.toString(), str);
     });
     
     it("Метод getStateMessageText()", function() {
-      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>" + strHalfHour + " (1)";
+      let str = "\n<b>Дата: </b>";
+      str += today.toLocaleDateString(dateLocale, dateOptions);
+      str += "\n<b>Вид: </b>" + strHalfHour + " (1)";
 
       assert.equal(reserve.getStateMessageText(), str);
     });
@@ -806,7 +808,9 @@ describe("class SupReserveState", function() {
     it("Проверка сериализации в JSON", function() {
       let jsonState = '{"type":"sup","menu":"main","createdAt":';
       jsonState += reserve.createdAt.getTime();
-      jsonState += ',"telegramId":329454218,"telegramName":"Misha V","start":1594051200000,"count":1,"set_type":"set"}';
+      jsonState += ',"telegramId":329454218,"telegramName":"Misha V","start":';
+      jsonState += today.getTime();
+      jsonState += ',"count":1,"set_type":"set"}';
       
       assert.equal(reserveState.toJSON(), jsonState);
     });
@@ -973,6 +977,65 @@ describe("class ReserveCallbackProcessor", function() {
       assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
       assert.equal(callbackProcessor.message.text, msgText);
       assert.equal(callbackProcessor.callbackText, strReserve);
+    });
+
+    it("Админская кнопка с номером бронирования", function() {
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      dataAdapter.getActiveReserveRows();
+      dataAdapter.spreadSheet.sheet.range.values = reserveValues;
+      let user = {"id":586350636,"first_name":"Alexey","last_name":"Sukharev"};
+
+      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      callbackProcessor.state.menu = "list";
+
+      callbackProcessor.proceedCallback("10", user);
+      let msgText = callbackProcessor.state.reserve.reserveArray[9].getStateMessageText();
+
+      let buttons = [];
+      let button = {};
+      button.text = strCancelButton;
+      button.callback_data = 'cancel-' + callbackProcessor.state.reserve.reserveArray[9].createdAt.getTime();
+      buttons.push([button]);
+      buttons.push([{text: strBackButton, callback_data: "back"}]);
+      
+      let keyboard = {inline_keyboard: buttons};
+
+      assert.equal(callbackProcessor.state.menu, 'details');
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.equal(callbackProcessor.callbackText, strReserve);
+    });
+
+    it("Админская кнопка Отмена бронирования", function() {
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      dataAdapter.getActiveReserveRows();
+      dataAdapter.spreadSheet.sheet.range.values = reserveValues;
+      let user = {"id":586350636,"first_name":"Alexey","last_name":"Sukharev"};
+      let reserve = new Reserve();
+      reserve.fromArray(reserveValues[9]);
+
+      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      callbackProcessor.state.menu = "details";
+
+      let callbackData = "cancel-";
+      callbackData += reserve.createdAt.getTime();
+
+      callbackProcessor.proceedCallback(callbackData, user);
+      let msgText = "<b>Список активных бронирований: </b>\n<b>04.07.2020</b>\n1.  10:00 - 10:05\n2.  11:30 - 11:40\n3.  12:00 - 12:10\n4.  12:00 - 12:05\n5.  13:00 - 13:05\n6.  13:00 - 13:15\n7.  14:00 - 14:05\n8.  15:00 - 15:05\n9.  17:00 - 17:10\n\n<b>06.07.2020</b>\n10.  15:00 - 15:05\n\n<b>07.07.2020</b>\n11.  10:00 - 10:05\n";
+
+      let callbackText = strDeleted + ': ';
+      callbackText += reserve.createdAt.toLocaleDateString(dateLocale, dateOptions) + ' ';
+      callbackText += reserve.createdAt.toLocaleTimeString(dateLocale, timeOptions);
+
+      let buttons = callbackProcessor.createCountButtons(11, 5);
+      buttons.push([{text: strBackButton, callback_data: "back"}]);
+      
+      let keyboard = {inline_keyboard: buttons};
+
+      assert.equal(callbackProcessor.state.menu, 'list');
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.equal(callbackProcessor.callbackText, callbackText);
     });
 
     it("Кнопка Назад", function() {

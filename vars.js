@@ -36,6 +36,7 @@ const hydroIcon = '\ud83d\udc59';
 const applyIcon = '\ud83d\udc4c';
 const beginIcon = '\ud83d\udc49';
 const stopIcon = '\u26d4\ufe0f'
+const cancelIcon = '\u274c';
 // Icons
 
 // Locale string definitions
@@ -120,6 +121,9 @@ const strMyReserveListHeader = '<b>' + strMyReserveList + ': </b>';
 const strDeleteList = 'Выберите бронирование для удаления:';
 const strDeleteListHeader = '<b>' + strReserveList + '</b>'
 const strDeleted = 'Запись удалена';
+
+const strCancel = 'Отменить';
+const strCancelButton = cancelIcon + ' ' + strCancel;
 // Locale string definitions
 
 // Set type button definitions

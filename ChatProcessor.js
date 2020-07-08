@@ -90,7 +90,7 @@ class ChatProcessor {
     processor.state.fromJSON(jsonState);
     processor.message.text = this._message.text;
 
-    processor.proceedCallback(this._callbackQuery.data);
+    processor.proceedCallback(this._callbackQuery.data, this._callbackQuery.from);
     this._state = processor.state;
 
     if(!dev) {

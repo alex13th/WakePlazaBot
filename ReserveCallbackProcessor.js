@@ -3,6 +3,7 @@ class ReserveCallbackProcessor {
     this.callbackText = '';
     this.message = {};
     this.dataAdapter = dataAdapter;
+    this.admins = [744947445, 329454218, 586350636, 317821671];
 
     if(state) {
         this.state = new ReserveState(state);
@@ -35,6 +36,8 @@ class ReserveCallbackProcessor {
     this.bookHandlers['count'] = this.callCountButton;
     this.bookHandlers['apply'] = this.callApplyButton;
 
+    this.detailsHandlers = {};
+    this.detailsHandlers['cancel'] = this.callCancelButton;
   }
 
   proceedCommand(cmd, user) {
@@ -49,7 +52,9 @@ class ReserveCallbackProcessor {
       return this.commandHandlers[cmd.name].apply(this);
   }
 
-  proceedCallback(data) {
+  proceedCallback(data, user) {
+    this._user = user;
+
     this.menuHandlers[this.state.menu].apply(this, [data]);
   }
 
@@ -173,6 +178,12 @@ class ReserveCallbackProcessor {
       let reserve = reserveArray[data - 1];
 
       let buttons = [];
+      if(this._user && this.admins.includes(this._user.id) ) {
+        let button = {};
+        button.text = strCancelButton;
+        button.callback_data = 'cancel-' + reserve.createdAt.getTime();
+        buttons.push([button]);
+      }
       buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
       let msgText = reserve.getStateMessageText();
@@ -247,6 +258,9 @@ class ReserveCallbackProcessor {
   callDetailsMenu(data) {
     if(data === 'back') {
       this.callListButton();
+    } else {
+      let splittedData = data.split('-');
+      this.detailsHandlers[splittedData[0]].apply(this, [splittedData[1]]);
     }
   }
 
@@ -254,6 +268,21 @@ class ReserveCallbackProcessor {
     if(data === 'back') {
       this.callMyListButton();
     }
+  }
+
+  callCancelButton(data) {
+    let cancelDate = new Date();
+    cancelDate.setTime(+data);
+
+    let keyField = this.state.reserve.fieldPositions['createdAt'];
+    let keyValue = cancelDate;
+
+    this.dataAdapter.deleteReserveRow(keyField, keyValue);
+
+    this.callListButton();
+    this.callbackText = strDeleted + ': ';
+    this.callbackText += cancelDate.toLocaleDateString(dateLocale, dateOptions) + ' ';
+    this.callbackText += cancelDate.toLocaleTimeString(dateLocale, timeOptions);
   }
 
   createBookMenuKeyboard() {

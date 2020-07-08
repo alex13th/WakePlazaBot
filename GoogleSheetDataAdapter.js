@@ -39,12 +39,12 @@ class GoogleSheetDataAdapter {
     sheet.appendRow(row);    
   }
 
-  deleteReserveRow(idColummn, idValue) {
+  deleteReserveRow(keyColumnNum, keyValue) {
     let sheet = this.openSheet(this.entrySheetName);
     let values = sheet.getDataRange().getValues();
   
     for(let i = 1; i < values.length; i++) {
-      if(values[i][idColummn].toString() === idValue.toString()) {
+      if(values[i][keyColumnNum].toString() === keyValue.toString()) {
         sheet.deleteRow(i + 1);
         break;
       }
