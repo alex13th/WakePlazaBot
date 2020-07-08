@@ -32,10 +32,10 @@ function tgPostMessage(chatId, text, keyboard = null, mode = 'HTML') {
   }
   
   if(keyboard) {
-    data.reply_markup = JSON.stringify(keyboard)
+    payload.reply_markup = JSON.stringify(keyboard)
   }
 
-  UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
+  return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
 }
 
 function tgEditMessage(msg, text, keyboard, mode = 'HTML') {
@@ -59,17 +59,7 @@ function tgEditMessage(msg, text, keyboard, mode = 'HTML') {
     payload: payload
   };
   
-  UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
-}
-
-function tgParseUserName(user) {
-  var result = user.first_name;
-  
-  if(user.hasOwnProperty('last_name')) {
-     result = result + ' ' + user.last_name;
-  }
-  
-  return result;
+  return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
 }
 
 function tgCallbackToQuery(callbackId, callbackText) {
@@ -83,53 +73,15 @@ function tgCallbackToQuery(callbackId, callbackText) {
     "payload": payload
   }
   
-  UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
+  return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
 }
 
-function createKeyboard(rows) {
-  var buttons = [];
+function tgParseUserName(user) {
+  var result = user.first_name;
   
-  for(var i = 0; i < rows.length; i++) {
-    buttons.push( createButtonsRow(rows[i]) );
-  }
-  
-  return {keyboard: buttons};
-}
-
-function createButtonsRow(row) {
-  var result = [];
-  
-  for(var i = 0; i < row.length; i++) {
-    result.push( createButton(row[i]) );
+  if(user.hasOwnProperty('last_name')) {
+     result = result + ' ' + user.last_name;
   }
   
   return result;
-}
-
-function createButton(caption) {
-    return {text: caption};
-}
-
-function createInlineKeyboard(rows) {
-  let buttons = [];
-  
-  for(var i = 0; i < rows.length; i++) {
-    buttons.push( createInlineButtonsRow(rows[i]) );
-  }
-  
-  return {inline_keyboard: buttons};
-}
-
-function createInlineButtonsRow(row) {
-  var result = [];
-  
-  for(var i = 0; i < row.length; i++) {
-    result.push( createCallbackButton(row[i].text, row[i].data) );
-  }
-  
-  return result;
-}
-
-function createCallbackButton(caption, data) {
-    return {text: caption, callback_data: data};
 }

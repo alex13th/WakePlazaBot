@@ -1,11 +1,13 @@
 class ChatProcessor {
-  constructor(update, properties) {
+  constructor(update, cache) {
     this.commandProcessors = {};
     this.callbackProcessors = {};
+    this.messageProcessors = {};
+
     this._command = null;
     this._callbackQuery = null;
     this._update = update;
-    this._properties = properties;
+    this._cache = cache;
     
     if ( update.hasOwnProperty('message') ) {
       this._message = update.message;
@@ -46,6 +48,10 @@ class ChatProcessor {
     this.callbackProcessors[stateType] = processor;
   }
 
+  registerMessageProcessor(stateType, processor) {
+    this.messageProcessors[stateType] = processor;
+  }
+
   proceed(dev = null) {
     let result = null;
 
@@ -65,7 +71,7 @@ class ChatProcessor {
   proceedCommand(dev) {
     let cmd = this.command;
     let processor = this.commandProcessors[cmd.name];
-    this._properties.deleteProperty(this.chatId);
+    this._cache.remove(this.chatId);
 
     this._state = processor.proceedCommand(cmd, this._message.from);
 
@@ -107,12 +113,12 @@ class ChatProcessor {
   }
 
   loadState() {
-    let jsonState = this._properties.getProperty(this.chatId);
+    let jsonState = this._cache.get(this.chatId);
     return jsonState;
   }
   
   saveState() {
     if(this._state)
-      this._properties.setProperty(this.chatId, this._state.toJSON());
+      this._cache.put(this.chatId, this._state.toJSON());
   }
 }
