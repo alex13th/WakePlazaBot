@@ -123,6 +123,6 @@ class ChatProcessor {
   
   saveState() {
     if(this._state)
-      this._cache.put(this.chatId, this._state.toJSON());
+      this._cache.put(this.chatId, this._state.toJSON(), 21600);
   }
 }
