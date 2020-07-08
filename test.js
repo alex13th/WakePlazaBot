@@ -627,7 +627,7 @@ describe("class SupReserve", function() {
       str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
       str += "\n" + strStartTimeLabel + "12:50";
       str += "\n" + strEndTimeLabel + "13:50";
-      str += "\n" + strTypeLabel + strSet + ' (2)';
+      str += "\n" + strTypeLabel + strHalfHour + ' (2)';
 
       assert.equal(reserve.getStateMessageText(), str);
     });
@@ -670,7 +670,7 @@ describe("class SupReserve", function() {
     });
     
     it("Метод getStateMessageText()", function() {
-      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>Сет (1)";
+      let str = "\n<b>Дата: </b>07.07.2020\n<b>Вид: </b>" + strHalfHour + " (1)";
 
       assert.equal(reserve.getStateMessageText(), str);
     });

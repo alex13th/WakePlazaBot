@@ -65,7 +65,7 @@ class SupProcessor extends ReserveCallbackProcessor {
 
   callSetMenu(data) {
     if(data === 'back') {
-      this.callBookButton(false);
+      this.callBookButton(true);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'set';
@@ -85,7 +85,7 @@ class SupProcessor extends ReserveCallbackProcessor {
 
   callHourMenu(data) {
     if(data === 'back') {
-      this.callBookButton(false);
+      this.callBookButton(true);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'hour';
@@ -114,7 +114,7 @@ class SupProcessor extends ReserveCallbackProcessor {
     buttons.push(buttonRow); 
 
     buttonRow = [];
-    buttonRow.push({text: strSetButton, callback_data: "set"});
+    buttonRow.push({text: strHalfHour, callback_data: "set"});
     buttonRow.push({text: strHourButton, callback_data: "hour"});
     buttons.push(buttonRow);
 

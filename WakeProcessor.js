@@ -73,7 +73,7 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callSetMenu(data) {
     if(data === 'back') {
-      this.callBookButton(false);
+      this.callBookButton(true);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'set';
@@ -93,7 +93,7 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callHourMenu(data) {
     if(data === 'back') {
-      this.callBookButton(false);
+      this.callBookButton(true);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'hour';
@@ -113,13 +113,13 @@ class WakeProcessor extends ReserveCallbackProcessor {
 
   callBoardButton() {
     this.state.reserve.board = this.state.reserve.board ? 0 : 1;
-    this.callBookButton(false);
+    this.callBookButton(true);
     this.callbackText = this.state.reserve.board ? strAddBoard : strRemoveBoard
   }
 
   callHydroButton() {
     this.state.reserve.hydro = this.state.reserve.hydro ? 0 : 1;
-    this.callBookButton(false);
+    this.callBookButton(true);
     this.callbackText = this.state.reserve.hydro ? strAddHydro : strRemoveHydro
   }
 

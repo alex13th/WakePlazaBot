@@ -103,7 +103,7 @@ class ReserveCallbackProcessor {
       this.callBookButton(true);
       this.callbackText = strDay + ": " + this.state.reserve.start.toLocaleDateString(dateLocale, dateOptions);
     } else {
-      this.callBookButton(false);
+      this.callBookButton(true);
     }
   }
 

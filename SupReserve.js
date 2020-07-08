@@ -1,5 +1,5 @@
 const supReserveTypeSizes = {'set': 30, 'hour': 60};
-const supReserveTypeNames = {'set': strSet, 'hour': strHour};
+const supReserveTypeNames = {'set': strHalfHour, 'hour': strHour};
 const supCount = 4;
 
 class SupReserve  extends Reserve {
@@ -54,7 +54,7 @@ class SupReserve  extends Reserve {
       result += '\n' + strEndTimeLabel + this.endTime;
     }
 
-    result += '\n' + strTypeLabel + wakeReserveTypeNames[this.setType];
+    result += '\n' + strTypeLabel + supReserveTypeNames[this.setType];
     result += ' ('  + this.count + ')';
 
     return result;

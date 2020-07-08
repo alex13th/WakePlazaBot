@@ -1,6 +1,5 @@
 const ENTRY_SHEET_NAME = 'Telegram';
 const LIST_SHEET_NAME = 'TelegramView';
-const publicChannel = '@DevWakeChannel';
 
 let helpText = '<b>Список команд</b>';
 helpText += '\n/wake - забронировать катание на Вейкборде;';
@@ -49,6 +48,7 @@ const strSup = 'Сапборд';
 const strSupButton = supIcon + ' ' + strSup;
 
 const strSet = 'Сет';
+const strHalfHour = '30 минут';
 const strHour = 'Час';
 const strMinutes = 'Минуты';
 

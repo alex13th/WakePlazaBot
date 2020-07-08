@@ -14,6 +14,11 @@ function doPost(e) {
       ENTRY_SHEET_NAME, LIST_SHEET_NAME));
     chatProcessor.registerCommandProcessor('wake', wakeProcessor);
     chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
+
+    let supProcessor = new SupProcessor(new GoogleSheetDataAdapter(SUP_SPREAD_SHEET, 
+      ENTRY_SHEET_NAME, LIST_SHEET_NAME));
+    chatProcessor.registerCommandProcessor('sup', supProcessor);
+    chatProcessor.registerCallbackProcessor('sup', supProcessor);
     
     chatProcessor.proceed();
   }
