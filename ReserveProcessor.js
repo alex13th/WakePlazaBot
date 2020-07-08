@@ -1,4 +1,4 @@
-class ReserveCallbackProcessor {
+class ReserveProcessor {
   constructor(dataAdapter, state) {
     this.callbackText = '';
     this.message = {};

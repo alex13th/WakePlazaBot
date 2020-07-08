@@ -2,7 +2,7 @@
 // CommandProcessor - method proceedCommand()
 // CallbackProcessor - method proceedCallback() is inherited from ReserveCallbackProcessor.
 
-class SupProcessor extends ReserveCallbackProcessor {
+class SupProcessor extends ReserveProcessor {
   constructor(dataAdapter, state) {
     super(dataAdapter, state);
 

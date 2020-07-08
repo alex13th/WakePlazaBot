@@ -871,9 +871,9 @@ describe("class DefaultCommandProcessor", function() {
     });
 });
 
-describe("class ReserveCallbackProcessor", function() {
+describe("class ReserveProcessor", function() {
   describe("Сервисные методы", function() {
-      let callbackProccessor = new ReserveCallbackProcessor();
+      let callbackProccessor = new ReserveProcessor();
       it("Проверка функции генерации кнопок времени", function() {
           let buttons = [];
           let buttonRow = [];
@@ -900,7 +900,7 @@ describe("class ReserveCallbackProcessor", function() {
   });
 
   describe("Обработка пунктов меню", function() {
-    let callbackProccessor = new ReserveCallbackProcessor();
+    let callbackProccessor = new ReserveProcessor();
 
     it("Кнопка Начать бронирование", function() {
       let keyboard = callbackProccessor.createBookMenuKeyboard();
@@ -919,7 +919,7 @@ describe("class ReserveCallbackProcessor", function() {
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
-      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
       
       let buttons = callbackProcessor.createCountButtons(12, 5);
       buttons.push([{text: strBackButton, callback_data: "back"}]);
@@ -940,7 +940,7 @@ describe("class ReserveCallbackProcessor", function() {
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
-      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
       callbackProcessor.proceedCommand(null, {"id":143929127,"first_name":"Alexey","last_name":"Sukharev"});
       
       let buttons = callbackProcessor.createCountButtons(7, 5);
@@ -962,7 +962,7 @@ describe("class ReserveCallbackProcessor", function() {
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
-      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
       callbackProcessor.state.menu = "list";
 
       let buttons = [];
@@ -985,7 +985,7 @@ describe("class ReserveCallbackProcessor", function() {
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       let user = {"id":586350636,"first_name":"Alexey","last_name":"Sukharev"};
 
-      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
       callbackProcessor.state.menu = "list";
 
       callbackProcessor.proceedCallback("10", user);
@@ -1014,7 +1014,7 @@ describe("class ReserveCallbackProcessor", function() {
       let reserve = new Reserve();
       reserve.fromArray(reserveValues[9]);
 
-      let callbackProcessor = new ReserveCallbackProcessor(dataAdapter);
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
       callbackProcessor.state.menu = "details";
 
       let callbackData = "cancel-";
@@ -1100,7 +1100,7 @@ describe("class ReserveCallbackProcessor", function() {
   });
 
   describe("Изменение данных", function() {
-    let callbackProccessor = new ReserveCallbackProcessor();
+    let callbackProccessor = new ReserveProcessor();
 
     it("Проверка изменения даты", function() {
       let keyboard = callbackProccessor.createBookMenuKeyboard();
