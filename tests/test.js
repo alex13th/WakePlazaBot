@@ -119,3 +119,6 @@ var SpreadsheetApp = new GoogleSpreadsheetApp();
 
 let today = new Date();
 today.setHours(0, 0, 0, 0);
+
+let cache = new GoogleCache();
+let props = new GoogleProperties();

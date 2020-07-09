@@ -1,14 +1,17 @@
 class ChatProcessor {
-  constructor(update, cache) {
+  constructor(strUpdate, properies, cache) {
+    let update = this.parseUpdate(strUpdate);
+    this._update = update;
+    this._cache = cache;
+    this._properies = properies;
+    
     this.commandProcessors = {};
     this.callbackProcessors = {};
     this.messageProcessors = {};
 
     this._command = null;
     this._callbackQuery = null;
-    this._update = update;
-    this._cache = cache;
-    
+
     if ( update.hasOwnProperty('message') ) {
       this._message = update.message;
     } else if ( update.hasOwnProperty('callback_query') ) {
@@ -52,15 +55,15 @@ class ChatProcessor {
     this.messageProcessors[stateType] = processor;
   }
 
-  proceed(dev = null) {
+  proceed() {
     let result = null;
 
     if(this.hasCommand) {
-      result = this.proceedCommand(dev);
+      result = this.proceedCommand();
     };
 
     if(this.hasCallback) {
-      result = this.proceedCallback(dev);
+      result = this.proceedCallback();
     }
 
     this.saveState();
@@ -68,22 +71,28 @@ class ChatProcessor {
     return result;
   }
 
-  proceedCommand(dev) {
+  proceedCommand() {
+    let result;
+    let strResult;
     let cmd = this.command;
     let processor = this.commandProcessors[cmd.name];
-    this._cache.remove(this.chatId);
+
+    this._properies.deleteProperty(this.chatId);
 
     this._state = processor.proceedCommand(cmd, this._message.from);
 
-    if(!dev) {
-      let chatId = processor.message.chatId || this.chatId;
-      tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
-    }
+    let chatId = processor.message.chatId || this.chatId;
+    strResult = tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
+    result = this.parseUpdate(strResult);
 
-    return processor.message;
+    if(this._state) {
+      this._state.id = chatId + '-' + result.result.message_id;
+    }
+    return result;
   }
 
-  proceedCallback(dev) {
+  proceedCallback() {
+    let strResult;
     let jsonState = this.loadState();
 
     if(!jsonState) {
@@ -99,30 +108,35 @@ class ChatProcessor {
     processor.proceedCallback(this._callbackQuery.data, this._callbackQuery.from);
     this._state = processor.state;
 
-    if(!dev) {
-      if(processor.message.chatId) {
-        tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
-      } else {
-        tgEditMessage(this._message, processor.message.text, processor.message.keyboard);
-      }
-
-      if(processor.notice.chatId) {
-        tgPostMessage(processor.notice.chatId, processor.notice.text);
-      }
-
-      tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);
+    if(processor.message.chatId) {
+      tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
+    } else {
+      strResult = tgEditMessage(this._message, processor.message.text, processor.message.keyboard);
     }
 
-    return processor.message;
+    if(processor.notice.chatId) {
+      tgPostMessage(processor.notice.chatId, processor.notice.text);
+    }
+
+    tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);
+
+    return this.parseUpdate(strResult);
+  }
+
+  parseUpdate(strUpdate) {
+    let result = null;
+    if(strUpdate)
+      result = JSON.parse(strUpdate);;
+    return result;
   }
 
   loadState() {
-    let jsonState = this._cache.get(this.chatId);
+    let jsonState = this._properies.getProperty(this.chatId + '-' + this._message.message_id);
     return jsonState;
   }
   
   saveState() {
     if(this._state)
-      this._cache.put(this.chatId, this._state.toJSON(), 21600);
+      this._properies.setProperty(this._state.id, this._state.toJSON());
   }
 }
