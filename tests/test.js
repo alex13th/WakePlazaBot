@@ -45,6 +45,10 @@ class GoogleCache {
       this._cache[key] = value;
   }
 
+  putAll(values) {
+    this._cache = values;
+  }
+
   remove(key) {
       delete this._cache[key];
   }

@@ -4,8 +4,6 @@ class ReserveProcessor {
     this.message = {};
     this.notice = {};
     this.dataAdapter = dataAdapter;
-    this.admins = [744947445, 329454218, 586350636, 317821671];
-
     
     if(state) {
         this.state = new ReserveState(state);
@@ -181,7 +179,7 @@ class ReserveProcessor {
       let reserve = reserveArray[data - 1];
 
       let buttons = [];
-      if(this._user && this.admins.includes(this._user.id) ) {
+      if(this._user && admins.includes(this._user.id) ) {
         let button = {};
         button.text = strCancelButton;
         button.callback_data = 'cancel-' + reserve.createdAt.getTime();

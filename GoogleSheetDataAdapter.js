@@ -20,15 +20,19 @@ class GoogleSheetDataAdapter {
     let sheet = this.openSheet(this.listSheetName);
     let values = sheet.getDataRange().getValues();
 
-    if(keyColumnNum) {
+    if(keyColumnNum === null) {
+
+      result = values.slice();
+      result.splice(0, 1);
+
+    } else {
+
       for(let i = 0; i < values.length; i++) {
         if(values[i][keyColumnNum] === keyValue) {
           result.push(values[i]);
         }
       }
-    } else {
-      result = values.slice();
-      result.splice(0, 1);
+
     }
     
     return result;
