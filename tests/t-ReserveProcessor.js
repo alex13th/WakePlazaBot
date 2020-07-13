@@ -49,6 +49,7 @@ describe("class ReserveProcessor", function() {
       let callbackProcessor = new ReserveProcessor(dataAdapter);
       
       let buttons = callbackProcessor.createCountButtons(12, 5);
+      buttons.push([{text: strReloadButton, callback_data: "reload"}]);
       buttons.push([{text: strBackButton, callback_data: "back"}]);
       
       let keyboard = {inline_keyboard: buttons};
@@ -104,6 +105,31 @@ describe("class ReserveProcessor", function() {
       assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
       assert.equal(callbackProcessor.message.text, msgText);
       assert.equal(callbackProcessor.callbackText, strReserve);
+    });
+
+    it("Кнопка обновить список", function() {
+      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      dataAdapter.getActiveReserveRows();
+      dataAdapter.spreadSheet.sheet.range.values = reserveValues;
+      
+      let callbackProcessor = new ReserveProcessor(dataAdapter);
+      callbackProcessor.state.menu = "list";
+
+      let buttons = callbackProcessor.createCountButtons(12, 5);
+      buttons.push([{text: strReloadButton, callback_data: "reload"}]);
+      buttons.push([{text: strBackButton, callback_data: "back"}]);
+      
+      let keyboard = {inline_keyboard: buttons};
+
+      callbackProcessor.proceedCallback("reload");
+      let msgText = "<b>Список активных бронирований: </b>\n<b>04.07.2020</b>\n1.  10:00 - 10:05\n2.  11:30 - 11:40\n3.  12:00 - 12:10\n4.  12:00 - 12:05\n5.  13:00 - 13:05\n6.  13:00 - 13:15\n7.  14:00 - 14:05\n8.  15:00 - 15:05\n9.  16:00 - 16:05\n10.  17:00 - 17:10\n\n<b>06.07.2020</b>\n11.  15:00 - 15:05\n\n<b>07.07.2020</b>\n12.  10:00 - 10:05\n";
+      msgText += '\n' + strReloadedLabel;
+      msgText += (new Date).toLocaleDateString(dateLocale, datetimeOptions);
+
+      assert.equal(callbackProcessor.state.menu, 'list');
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.equal(callbackProcessor.callbackText, strReserveList);
     });
 
     it("Кнопка Назад", function() {
@@ -284,6 +310,7 @@ describe("class ReserveProcessor", function() {
       callbackText += reserve.createdAt.toLocaleTimeString(dateLocale, timeOptions);
 
       let buttons = callbackProcessor.createCountButtons(11, 5);
+      buttons.push([{text: strReloadButton, callback_data: "reload"}]);
       buttons.push([{text: strBackButton, callback_data: "back"}]);
       
       let keyboard = {inline_keyboard: buttons};
@@ -314,6 +341,7 @@ describe("class ReserveProcessor", function() {
       let callbackText = strNotice + ': ' + 480666793;
 
       let buttons = callbackProcessor.createCountButtons(11, 5);
+      buttons.push([{text: strReloadButton, callback_data: "reload"}]);
       buttons.push([{text: strBackButton, callback_data: "back"}]);
       
       let keyboard = {inline_keyboard: buttons};

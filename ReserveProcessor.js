@@ -174,6 +174,10 @@ class ReserveProcessor {
   callListMenu(data) {
     if(data === 'back') {
       this.callMainButton();
+    } else if(data === 'reload') {
+        this.callListButton();
+        this.message.text += '\n' + strReloadedLabel;
+        this.message.text += (new Date).toLocaleDateString(dateLocale, datetimeOptions);
     } else {
       let reserveArray = this.fillReserveArray();
       let reserve = reserveArray[data - 1];
@@ -210,6 +214,7 @@ class ReserveProcessor {
       buttons = this.createCountButtons(reserveArray.length, 5);
     }
 
+    buttons.push([{text: strReloadButton, callback_data: "reload"}]);
     buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
     this.state.menu = 'list';
