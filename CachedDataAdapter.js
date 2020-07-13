@@ -35,13 +35,14 @@ function restoreDateFields(row) {
 }
 
 class CachedDataAdapter {
-  constructor(dataAdapter, cache, cache_prefix = 'data') {
+  constructor(dataAdapter, cache, cache_prefix = 'data', keyColumnNum = 0) {
     this.dataAdapter = dataAdapter;
     this.cache = cache;
     this.cache_prefix = cache_prefix;
+    this.keyColumnNum = keyColumnNum;
   }
 
-  getActiveReserveRows(keyColumnNum = null, keyValue =null) {
+  getActiveReserveRows(keyColumnNum = null, keyValue = null) {
     let result;
     let cachedCount = cache.get(this.cache_prefix + '-count');
 
@@ -51,16 +52,9 @@ class CachedDataAdapter {
       if(keyColumnNum === null) {
 
         return values;
-
       } else {
 
-        for(let i = 0; i < values.length; i++) {
-          if(values[i][keyColumnNum] === keyValue) {
-            result.push(values[i]);
-          }
-        }
-
-        return result;
+        return [this.getCachedRow(keyValue)];
       }
     } else {
 
@@ -99,16 +93,31 @@ class CachedDataAdapter {
     return result;
   }
 
+  getCachedRow(keyValue = null) {
+    let result = null;
+    let keyName = this.cache_prefix + '-' + keyValue;
+
+    result = restoreDateFields(JSON.parse(cache.get(keyName) ) );
+
+    return result;
+  }
+
   putCache(rows) {
     let values = {};
 
     values[this.cache_prefix + '-count'] = rows.length;
 
     for(let i = 0; i < rows.length; i++) {
-
       values[this.cache_prefix + '-' + i] = JSON.stringify(replaceDateFields(rows[i]));
+      this.putCacheRow(rows[i]);
     }
 
     this.cache.putAll(values);
+  }
+
+  putCacheRow(row) {
+    let keyName = this.cache_prefix + '-' + row[this.keyColumnNum];
+
+    this.cache.put(keyName, JSON.stringify(replaceDateFields(row) ) );
   }
 }
