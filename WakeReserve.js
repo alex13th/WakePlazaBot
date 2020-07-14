@@ -47,7 +47,7 @@ class WakeReserve extends Reserve {
     let result = '';
     let confictReserve = this.findConflict();
 
-    if(this.conflictReserve.length >= this.maxConfictCount) {
+    if(this.conflictCount > this.maxConfictCount) {
       result += '\n' + strReserveConflict;
       result += '\n' + stopIcon + confictReserve.toString();
     }

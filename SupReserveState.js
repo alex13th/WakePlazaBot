@@ -15,12 +15,14 @@ class SupReserveState extends ReserveState  {
     let state = JSON.parse(json);
     
     this.reserve.setType = state.set_type;
+    this.reserve.bookCount = state.book_count;
   }
 
   toJSON() {
     let state = JSON.parse(super.toJSON());
 
     state.set_type = this.reserve.setType;
+    state.book_count = this.reserve.bookCount;
     
     return JSON.stringify(state);
   }

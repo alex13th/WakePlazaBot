@@ -122,5 +122,21 @@ describe("class SupProcessor", function() {
           assert.equal(callbackProccessor.state.reserve.setType, "hour");
           assert.equal(callbackProccessor.callbackText, strHour + ": 2");
       });
-  });
+      it("Проверка изменения Количество", function() {
+        let keyboard = callbackProccessor.createBookMenuKeyboard();
+        callbackProccessor.state.menu = "book";
+
+        callbackProccessor.proceedCallback("2");
+
+        assert.equal(callbackProccessor.state.menu, "book");
+        assert.deepEqual(callbackProccessor.message.keyboard, keyboard);
+        assert.equal(callbackProccessor.state.reserve.bookCount, 2);
+        assert.equal(callbackProccessor.callbackText, 2);
+
+        callbackProccessor.proceedCallback("3");
+
+        assert.equal(callbackProccessor.state.reserve.bookCount, 3);
+        assert.equal(callbackProccessor.callbackText, 3);
+    });
+});
 });

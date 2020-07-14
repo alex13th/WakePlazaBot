@@ -104,7 +104,7 @@ class SupProcessor extends ReserveProcessor {
   }
 
   createBookMenuKeyboard() {
-    let buttons = [];
+    let buttons = this.createCountButtons(this.state.reserve.maxConfictCount);
     let buttonRow = [];
 
     buttonRow = [{text: strDateButton, callback_data: "date"}];

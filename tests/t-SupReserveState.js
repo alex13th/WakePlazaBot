@@ -25,7 +25,7 @@ describe("class SupReserveState", function() {
       jsonState += reserve.createdAt.getTime();
       jsonState += ',"telegramId":329454218,"telegramName":"Misha V","start":';
       jsonState += today.getTime();
-      jsonState += ',"count":1,"set_type":"set"}';
+      jsonState += ',"count":1,"set_type":"set","book_count":1}';
       
       assert.equal(reserveState.toJSON(), jsonState);
     });
@@ -38,7 +38,8 @@ describe("class SupReserveState", function() {
     jsonState += '"telegramId":329454218' + ',';
     jsonState += '"telegramName":"Misha V"' + ',';
     jsonState += '"start":' + today.getTime() + ',"count":2,';
-    jsonState += '"set_type":"hour"}';
+    jsonState += '"set_type":"hour",';
+    jsonState += '"book_count":1}';
 
     let reserveState = new SupReserveState();
     reserveState.fromJSON(jsonState);

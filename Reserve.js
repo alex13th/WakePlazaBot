@@ -1,5 +1,5 @@
 class Reserve {
-  constructor(telegramId, telegramName, start = null, count = 1) {
+  constructor(telegramId, telegramName, start = null, count = 1, bookCount = 1) {
     if(!start) {
       start = new Date();
       start.setHours(0, 0, 0, 0);
@@ -14,6 +14,8 @@ class Reserve {
     this.telegramName = telegramName;
     this.start = start;
     this.count = count;
+    this.bookCount = bookCount;
+    this.conflictCount = this.bookCount;
 
 
     // Array's field positions
@@ -52,7 +54,7 @@ class Reserve {
   }
 
   get isCompleted() {
-    return this.count && this.startTime && (this.conflictReserve.length < this.maxConfictCount);
+    return this.count && this.startTime && (this.conflictCount <= this.maxConfictCount);
   }
 
   toString() {
@@ -76,7 +78,7 @@ class Reserve {
 
   findConflict() {
     let result = [];
-    let conflictCount = 0;
+    let conflictCount = this.bookCount;
 
     if(this.reserveArray) {
       for(let i = 0; i < this.reserveArray.length; i++) {
@@ -85,10 +87,10 @@ class Reserve {
         if(this.start.getTime() === reserve.start.getTime() || 
           this.end.getTime() === reserve.end.getTime() ) {
 
-          conflictCount++;
+          conflictCount += reserve.bookCount;
           result.push(reserve);
 
-          if(conflictCount >= this.maxConfictCount) {
+          if(conflictCount > this.maxConfictCount) {
             break;
           } else {
             continue;
@@ -96,10 +98,10 @@ class Reserve {
         }
 
         if(this.start > reserve.start && this.start < reserve.end) {
-          conflictCount++;
+          conflictCount += reserve.bookCount;
           result.push(reserve);
 
-          if(conflictCount >= this.maxConfictCount) {
+          if(conflictCount > this.maxConfictCount) {
             break;
           } else {
             continue;
@@ -107,10 +109,10 @@ class Reserve {
         }
 
         if(this.end > reserve.start && this.end < reserve.end) {
-          conflictCount++;
+          conflictCount += reserve.bookCount;
           result.push(reserve);
 
-          if(conflictCount >= this.maxConfictCount) {
+          if(conflictCount > this.maxConfictCount) {
             break;
           } else {
             continue;
@@ -118,10 +120,10 @@ class Reserve {
         }
 
         if(this.start < reserve.start && this.end > reserve.start) {
-          conflictCount++;
+          conflictCount += reserve.bookCount;
           result.push(reserve);
 
-          if(conflictCount >= this.maxConfictCount) {
+          if(conflictCount > this.maxConfictCount) {
             break;
           } else {
             continue;
@@ -131,13 +133,14 @@ class Reserve {
     }
 
     this.conflictReserve = result;
+    this.conflictCount = conflictCount;
     return result;
   }
 
   getStateMessageText() {
     let result = '';
 
-    if(this.conflictReserve.length >= this.maxConfictCount) {
+    if(this.conflictCount > this.maxConfictCount) {
       result += '\n' + strReserveConflict;
       result += '\n' + stopIcon + this.conflictReserve.toString();
     }

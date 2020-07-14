@@ -3,10 +3,11 @@ const supReserveTypeNames = {'set': strHalfHour, 'hour': strHour};
 const supCount = 4;
 
 class SupReserve  extends Reserve {
-  constructor(telegramId, telegramName, start = null, count = 1, setType = 'set') {
-    super(telegramId, telegramName, start, count);
+  constructor(telegramId, telegramName, start = null, count = 1, setType = 'set', bookCount = 1) {
+    super(telegramId, telegramName, start, count, bookCount = 1);
     this.setType = setType;
     this.maxConfictCount = supCount;
+    this.bookCount = bookCount;
 
     // Array's field positions
     this.fieldPositions['createdAt'] = 0;
@@ -16,6 +17,7 @@ class SupReserve  extends Reserve {
     this.fieldPositions['end'] = 4;
     this.fieldPositions['setType'] = 5;
     this.fieldPositions['count'] = 6;
+    this.fieldPositions['bookCount'] = 7;
     // Array's field positions
   }
 
@@ -30,17 +32,17 @@ class SupReserve  extends Reserve {
       result += (this.setType === 'set') ? setIcon : hourIcon;
       result += ' ' + this.startTime;
       result += ' - ' + this.endTime;
+      result += ' :: <b>' + this.bookCount + '</b>';
     }
 
     return result;
   }
-  
 
   getStateMessageText() {
     let result = '';
     let confictReserve = this.findConflict();
 
-    if(this.conflictReserve.length >= this.maxConfictCount) {
+    if(this.conflictCount > this.maxConfictCount) {
       result += '\n' + strReserveConflict;
       result += '\n' + stopIcon + confictReserve.toString();
     }
@@ -57,6 +59,8 @@ class SupReserve  extends Reserve {
     result += '\n' + strTypeLabel + supReserveTypeNames[this.setType];
     result += ' ('  + this.count + ')';
 
+    result += '\n' + strCountLabel + this.bookCount;
+
     return result;
   }
 
@@ -64,6 +68,7 @@ class SupReserve  extends Reserve {
     super.fromArray(reserveRow);
 
     this.setType = reserveRow[this.fieldPositions['setType']];
+    this.bookCount = reserveRow[this.fieldPositions['bookCount']];
   }
 
   toArray() {
@@ -76,6 +81,7 @@ class SupReserve  extends Reserve {
     result[this.fieldPositions['end']] = this.end;
     result[this.fieldPositions['count']] = this.count;
     result[this.fieldPositions['setType']] = this.setType;
+    result[this.fieldPositions['bookCount']] = this.bookCount;
 
     return result;
   }

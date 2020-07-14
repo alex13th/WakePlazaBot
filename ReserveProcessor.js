@@ -73,10 +73,14 @@ class ReserveProcessor {
   }
 
   callBookMenu(data) {
-    if(!(data === 'back')) {
+    if(data === 'back') {
+      this.callMainButton();
+    } else if(this.bookHandlers.hasOwnProperty(data)) {
       this.bookHandlers[data].apply(this, [data]);
     } else {
-      this.callMainButton();
+      this.state.reserve.bookCount = +data;
+      this.callBookButton();
+      this.callbackText = data;
     }
   }
 
@@ -100,7 +104,9 @@ class ReserveProcessor {
   }
   
   callDateMenu(data) {
-    if(!(data === 'back')) {
+    if(data === 'back') {
+      this.callBookButton(true);
+    } else {
       let newDate = new Date();
       let startDate = this.state.reserve.start;
       newDate.setHours(startDate.getHours(), startDate.getMinutes(), 0, 0);
@@ -108,8 +114,6 @@ class ReserveProcessor {
       this.state.reserve.start = newDate;
       this.callBookButton(true);
       this.callbackText = strDay + ": " + this.state.reserve.start.toLocaleDateString(dateLocale, dateOptions);
-    } else {
-      this.callBookButton(true);
     }
   }
 
@@ -123,11 +127,11 @@ class ReserveProcessor {
   }
 
   callTimeMenu(data) {
-    if(!(data === 'back')) {
+    if(data === 'back') {
+      this.callBookButton(true);
+    } else {
       this.state.reserve.start.setHours(data);
       this.callMinutesButton();
-    } else {
-      this.callBookButton(true);
     }
   }
 
@@ -141,12 +145,12 @@ class ReserveProcessor {
   }
 
   callMinutesMenu(data) {
-    if(!(data === 'back')) {
+    if(data === 'back') {
+      this.callTimeButton();
+    } else {
       this.state.reserve.start.setMinutes(data);
       this.callBookButton(true);
       this.callbackText = strTime + ": " + this.state.reserve.startTime;
-    } else {
-      this.callTimeButton();
     }
   }
 
@@ -349,7 +353,7 @@ class ReserveProcessor {
     let buttonRow = [];
     
     for(let i = startTime; i <= endTime; i++) {
-      buttonRow.push({text: i, callback_data: i});
+      buttonRow.push({text: i + ':', callback_data: i});
   
       if((i - startTime + 1) % rowSize == 0) {
         buttons.push(buttonRow);
