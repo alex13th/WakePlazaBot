@@ -114,8 +114,8 @@ class ChatProcessor {
       strResult = tgEditMessage(this._message, processor.message.text, processor.message.keyboard);
     }
 
-    if(processor.notice.chatId) {
-      tgPostMessage(processor.notice.chatId, processor.notice.text);
+    if(processor.notice.text) {
+      tgPostMessage(processor.notice.chatId || this.chatId, processor.notice.text, processor.notice.keyboard);
     }
 
     tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);

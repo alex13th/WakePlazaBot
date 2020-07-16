@@ -1,5 +1,11 @@
-const ENTRY_SHEET_NAME = 'Telegram';
-const LIST_SHEET_NAME = 'TelegramView';
+const USERS_SHEET_NAME = 'Users';
+
+const WAKE_SHEET_NAME = 'Wakeboard';
+const WAKE_ACTIVE_SHEET_NAME = 'WakeboardActive';
+
+const SUP_SHEET_NAME = 'Supboard';
+const SUP_ACTIVE_SHEET_NAME = 'SupboardActive';
+
 
 let helpText = '<b>Список команд</b>';
 helpText += '\n/wake - забронировать катание на Вейкборде;';

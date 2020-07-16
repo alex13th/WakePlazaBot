@@ -42,7 +42,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Кнопка Список активных бронирований ", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -64,7 +64,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Кнопка Мои бронирования ", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -86,7 +86,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Кнопка с номером бронирования", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -108,7 +108,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Кнопка обновить список", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       
@@ -216,20 +216,29 @@ describe("class ReserveProcessor", function() {
       buttons.push([{text: strBackButton, callback_data: 'back'}]);
       let keyboard = {inline_keyboard: buttons};
       let newDate = new Date(callbackProccessor.state.reserve.start);
-      newDate.setHours(18);
+      // newDate.setHours(18);
 
       callbackProccessor.state.menu = "time";
       callbackProccessor.proceedCallback(18);
 
       assert.equal(callbackProccessor.state.menu, "minutes");
+      assert.equal(callbackProccessor.state._newHours, 18);
       assert.deepEqual(callbackProccessor.message.keyboard, keyboard);
       assert.deepEqual(callbackProccessor.state.reserve.start, newDate);
       assert.equal(callbackProccessor.callbackText, strSelect + " " + strMinutes);
     });
 
     it("Проверка изменения минут", function() {
-      let keyboard = callbackProccessor.createBookMenuKeyboard();
+      let buttons = [];
+      buttons.push([{text: strDateButton, callback_data: "date"}]);
+      buttons.push([{text: strTimeButton, callback_data: "time"}]);
+      buttons.push([{text: strCountButton, callback_data: "count"}]);
+      buttons.push([{text: applyIcon + ' ' + strApply, callback_data: "apply"}]);
+      buttons.push([{text: strBackButton, callback_data: 'back'}]);
+      
+      let keyboard = {inline_keyboard: buttons};
       let newDate = new Date(callbackProccessor.state.reserve.start);
+      newDate.setHours(18);
       newDate.setMinutes(40);
 
       callbackProccessor.state.menu = "minutes";
@@ -256,7 +265,7 @@ describe("class ReserveProcessor", function() {
 
   describe("Административные функции", function() {
     it("Админская кнопка с номером бронирования", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       let user = {"id":586350636,"first_name":"Alexey","last_name":"Sukharev"};
@@ -289,7 +298,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Админская кнопка Отмена бронирования", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       let user = {"id":586350636,"first_name":"Alexey","last_name":"Sukharev"};
@@ -322,7 +331,7 @@ describe("class ReserveProcessor", function() {
     });
 
     it("Админская кнопка Оповещение об уточнении", function() {
-      let dataAdapter = new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter(null, null, null);
       dataAdapter.getActiveReserveRows();
       dataAdapter.spreadSheet.sheet.range.values = reserveValues;
       let user = {"id":480666793,"first_name":"Alexey","last_name":"Sukharev"};

@@ -17,6 +17,7 @@ class ReserveState {
     this.id = state.id;
     this.type = state.type;
     this.menu = state.menu;
+    this._newHours = state.new_hours;
 
     this.reserve.createdAt.setTime(state.createdAt);
     this.reserve.telegramId = state.telegramId;
@@ -31,6 +32,7 @@ class ReserveState {
     state.id = this.id;
     state.type = this.type;
     state.menu = this.menu;
+    state.new_hours = this._newHours;
     state.createdAt = this.reserve.createdAt.getTime();
     state.telegramId = this.reserve.telegramId;
     state.telegramName = this.reserve.telegramName;

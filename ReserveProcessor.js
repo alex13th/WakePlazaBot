@@ -79,33 +79,33 @@ class ReserveProcessor {
       this.bookHandlers[data].apply(this, [data]);
     } else {
       this.state.reserve.bookCount = +data;
-      this.callBookButton();
+      this.callBookButton(true);
       this.callbackText = data;
     }
   }
 
-  callBookButton(check = true) {
-    let msgText = strReserveStateHeader;
+  callBookButton(refresh = true) {
+    let msgText = null;
     let keyboard;
     this.state.menu = 'book';
 
-    if(check) {
+    if(refresh) {
       this.fillReserveArray();
       this.state.reserve.findConflict();
+      msgText = strReserveStateHeader;
+      msgText += this.state.reserve.getStateMessageText();
+      this.message.text = msgText;
     }
-
-    msgText += this.state.reserve.getStateMessageText();
 
     keyboard = this.createBookMenuKeyboard();
 
-    this.message.text = msgText;
     this.message.keyboard = keyboard;
     this.callbackText = strReserve;
   }
   
   callDateMenu(data) {
     if(data === 'back') {
-      this.callBookButton(true);
+      this.callBookButton(false);
     } else {
       let newDate = new Date();
       let startDate = this.state.reserve.start;
@@ -128,9 +128,10 @@ class ReserveProcessor {
 
   callTimeMenu(data) {
     if(data === 'back') {
-      this.callBookButton(true);
+      this.callBookButton(false);
+      this.state._newHours = null;
     } else {
-      this.state.reserve.start.setHours(data);
+      this.state._newHours = +data;
       this.callMinutesButton();
     }
   }
@@ -148,7 +149,9 @@ class ReserveProcessor {
     if(data === 'back') {
       this.callTimeButton();
     } else {
+      this.state.reserve.start.setHours(this.state._newHours);
       this.state.reserve.start.setMinutes(data);
+      this.state._newHours = null;
       this.callBookButton(true);
       this.callbackText = strTime + ": " + this.state.reserve.startTime;
     }
@@ -313,7 +316,6 @@ class ReserveProcessor {
     buttons.push([{text: strDateButton, callback_data: "date"}]);
     buttons.push([{text: strTimeButton, callback_data: "time"}]);
     buttons.push([{text: strCountButton, callback_data: "count"}]);
-    buttons.push([{text: strBackButton, callback_data: "back"}]);
 
     if(this.state.reserve.isCompleted) {
       let buttonRow = [];

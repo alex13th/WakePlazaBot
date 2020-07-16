@@ -32,8 +32,8 @@ describe("class WakeProcessor", function() {
   });
 
   describe("Обработка пунктов меню", function() {
-    let callbackProcessor = new WakeProcessor(new GoogleSheetDataAdapter(WAKE_SPREAD_SHEET, 
-      ENTRY_SHEET_NAME, LIST_SHEET_NAME));
+    let callbackProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
+      null, null));
     callbackProcessor.state.menu = "book";
 
     it("Обработка кнопки Сет", function() {

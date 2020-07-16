@@ -114,7 +114,7 @@ describe("class SupReserve", function() {
       reserve.start = startDateTime;
       reserve.count = 2;
 
-      let dataAdapter = new GoogleSheetDataAdapter("sup", ENTRY_SHEET_NAME, LIST_SHEET_NAME);
+      let dataAdapter = new GoogleSheetDataAdapter("sup", null, null);
       let reserveRows = dataAdapter.getActiveReserveRows();
       let reserveArray = reserve.createReserveArray(reserveRows);
       reserve.reserveArray = reserveArray;

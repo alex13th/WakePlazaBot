@@ -1,5 +1,5 @@
 function tgPostMessage(chatId, text, keyboard = null, mode = 'HTML') {
-  let replyMessage = '{"ok":true,"result":{"message_id":1241,';
+  let replyMessage = '{"ok":true,"result":{"message_id":1484,';
   replyMessage += '"from":{"id":1273795086,"is_bot":true,';
   replyMessage += '"first_name":"DevWakeBot","username":"DevWakeBot"},';
   replyMessage += '"chat":{"id":586350636,"first_name":"Alexey",';
@@ -9,7 +9,7 @@ function tgPostMessage(chatId, text, keyboard = null, mode = 'HTML') {
 }
 
 function tgEditMessage(msg, text, keyboard, mode = 'HTML') {
-  let replyMessage = '{"ok":true,"result":{"message_id":1241,';
+  let replyMessage = '{"ok":true,"result":{"message_id":1484,';
   replyMessage += '"from":{"id":1273795086,"is_bot":true,';
   replyMessage += '"first_name":"DevWakeBot","username":"DevWakeBot"},';
   replyMessage += '"chat":{"id":586350636,"first_name":"Alexey",';

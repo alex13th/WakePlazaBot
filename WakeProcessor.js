@@ -73,7 +73,7 @@ class WakeProcessor extends ReserveProcessor {
 
   callSetMenu(data) {
     if(data === 'back') {
-      this.callBookButton(true);
+      this.callBookButton(false);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'set';
@@ -93,7 +93,7 @@ class WakeProcessor extends ReserveProcessor {
 
   callHourMenu(data) {
     if(data === 'back') {
-      this.callBookButton(true);
+      this.callBookButton(false);
     } else {
       this.state.reserve.count = +data;
       this.state.reserve.setType = 'hour';
