@@ -96,6 +96,8 @@ class ChatProcessor {
     let jsonState = this.loadState();
 
     if(!jsonState) {
+      strResult = tgEditMessage(this._message, noMessageStateError, null);
+      tgPostMessage(this.chatId, helpText);
       return;
     }
 

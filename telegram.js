@@ -38,7 +38,7 @@ function tgPostMessage(chatId, text, keyboard = null, mode = 'HTML') {
   return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
 }
 
-function tgEditMessage(msg, text, keyboard, mode = 'HTML') {
+function tgEditMessage(msg, text, keyboard = null, mode = 'HTML') {
   let chatId = msg.chat.id;
   let msgId = msg.message_id;
   

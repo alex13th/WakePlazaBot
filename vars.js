@@ -53,6 +53,8 @@ const reloadIcon = '\ud83d\udd04';
 // Icons
 
 // Locale string definitions
+let noMessageStateError = stopIcon + ' Срок работы с этим сообщение истёк!';
+
 const strSelect = 'Выбрать';
 
 const strWake = 'Вейкборд';
