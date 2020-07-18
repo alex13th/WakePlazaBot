@@ -35,8 +35,9 @@ describe("class SupProcessor", function() {
     let callbackProcessor;
 
     it("Создание экземпляра", function() {
-      callbackProcessor = new SupProcessor(new GoogleSheetDataAdapter(null, 
-        null, null));
+        callbackProcessor = new SupProcessor(
+                            new GoogleSheetDataAdapter(null, "reserve", "reserve"));
+        
         callbackProcessor.state.menu = "book";
       });
 

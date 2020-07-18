@@ -67,8 +67,6 @@ class WakeProcessor extends ReserveProcessor {
     this.message.text += this.state.reserve.getStateMessageText();
     this.message.keyboard = null;
     this.callbackText = strReserveComfirmed;
-
-    this.state = new WakeReserveState();
   }
 
   callSetMenu(data) {

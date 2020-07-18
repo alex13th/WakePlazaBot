@@ -4,7 +4,7 @@ describe("class CachedDataAdapter", function() {
         
       it("Создание экземпляра", function() {
         let dataAdapter;
-        dataAdapter = new GoogleSheetDataAdapter(null, null, null);
+        dataAdapter = new GoogleSheetDataAdapter(null, "wake", "wake");
         cachedAdapter = new CachedDataAdapter(dataAdapter, cache, "wake")
       });
     });

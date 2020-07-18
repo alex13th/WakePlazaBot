@@ -138,8 +138,8 @@ describe("class ChatProcessor", function() {
 
         it("Создание WakeProcessor", function() {
           wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-            null, null));
-
+            "wake", "wake"));
+  
           chatProcessor.registerCommandProcessor('wake', wakeProcessor);
           chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
         });
@@ -173,7 +173,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -208,7 +208,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -245,7 +245,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -282,7 +282,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -319,7 +319,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -359,7 +359,7 @@ describe("class ChatProcessor", function() {
 
       it("Создание WakeProcessor", function() {
         wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-          null, null));
+          "wake", "wake"));
 
         chatProcessor.registerCommandProcessor('wake', wakeProcessor);
         chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
@@ -379,6 +379,35 @@ describe("class ChatProcessor", function() {
         assert.equal(state.count, 1);
         assert.equal(state.board, 0);
         assert.equal(state.hydro, 0);
+      });
+    });
+    describe("Кнопка Забронировать", function() {
+      let strUpdate = '{"update_id":354675660,"callback_query":{"id":"2518356809810986925","from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"message":{"message_id":1484,"from":{"id":1273795086,"is_bot":true,"first_name":"DevWakeBot","username":"DevWakeBot"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595044266,"edit_date":1595044285,"text":"Message Text","entities":[{"offset":0,"length":14,"type":"bold"},{"offset":15,"length":5,"type":"bold"},{"offset":36,"length":6,"type":"bold"},{"offset":53,"length":8,"type":"bold"},{"offset":67,"length":11,"type":"bold"},{"offset":84,"length":5,"type":"bold"},{"offset":93,"length":12,"type":"bold"}],"reply_markup":{"inline_keyboard":[[{"text":"\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0434\u0430\u0442\u0443","callback_data":"date"}],[{"text":"\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u0432\u0440\u0435\u043c\u044f","callback_data":"time"}],[{"text":"\u0421\u0435\u0442","callback_data":"set"},{"text":"\u0427\u0430\u0441","callback_data":"hour"}],[{"text":"\ud83c\udfc4\u200d\u2642\ufe0f \u0412\u0435\u0439\u043a\u0431\u043e\u0440\u0434","callback_data":"board"},{"text":"\ud83d\udc59 \u0413\u0438\u0434\u0440\u043e\u043a\u043e\u0441\u0442\u044e\u043c","callback_data":"hydro"}],[{"text":"\ud83d\udc4c \u0417\u0430\u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u0442\u044c","callback_data":"apply"}],[{"text":"\u041d\u0430\u0437\u0430\u0434","callback_data":"back"}]]}},"chat_instance":"-1517723406088083073","data":"apply"}}';
+      let chatProcessor;
+      let wakeProcessor;
+      let stateId = "586350636-1484";
+
+      it("Создание ChatProcessor", function() {
+        chatProcessor = new ChatProcessor(strUpdate, scriptProperties);
+      });
+
+      it("Создание WakeProcessor", function() {
+        wakeProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
+          "wake", "wake"));
+
+        chatProcessor.registerCommandProcessor('wake', wakeProcessor);
+        chatProcessor.registerCallbackProcessor('wake', wakeProcessor);
+      });
+
+      it("Обработка кнопки ", function() {
+        chatProcessor.proceed();
+      });
+
+      it("Проверка state", function() {
+        let state = JSON.parse(scriptProperties.getProperty(stateId));
+
+        assert.equal(state.type, "wake");
+        assert.equal(state.menu, "main");
       });
     });
 

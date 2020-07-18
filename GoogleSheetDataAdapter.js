@@ -3,6 +3,7 @@ class GoogleSheetDataAdapter {
     this.spreadSheetId = spreadSheetId;
     this.entrySheetName = entrySheetName;
     this.listSheetName = listSheetName;
+    this.values = null;
   }
 
   openSheet(sheetName) {
@@ -18,21 +19,21 @@ class GoogleSheetDataAdapter {
     let result = [];
 
     let sheet = this.openSheet(this.listSheetName);
-    let values = sheet.getDataRange().getValues();
+
+    if(!this.values) {
+      this.values = sheet.getDataRange().getValues();
+      this.values.splice(0, 1);
+    }
 
     if(keyColumnNum === null) {
-
-      result = values.slice();
-      result.splice(0, 1);
-
+      result = this.values;
     } else {
 
-      for(let i = 0; i < values.length; i++) {
-        if(values[i][keyColumnNum] === keyValue) {
-          result.push(values[i]);
+      for(let i = 0; i < this.values.length; i++) {
+        if(this.values[i][keyColumnNum] === keyValue) {
+          result.push(this.values[i]);
         }
       }
-
     }
     
     return result;
@@ -40,18 +41,21 @@ class GoogleSheetDataAdapter {
 
   appendReserveRow(row) {
     let sheet = this.openSheet(this.entrySheetName);
-    sheet.appendRow(row);    
+    sheet.appendRow(row);
+    this.values = null;
   }
 
   deleteReserveRow(keyColumnNum, keyValue) {
     let sheet = this.openSheet(this.entrySheetName);
     let values = sheet.getDataRange().getValues();
-  
+
     for(let i = 1; i < values.length; i++) {
       if(values[i][keyColumnNum].toString() === keyValue.toString()) {
         sheet.deleteRow(i + 1);
         break;
       }
     }    
+
+    this.values = null;
   }
 }

@@ -3,11 +3,11 @@ describe("class GoogleSheetDataAdapter", function() {
     describe("Создание объекта доступа к данным", function() {
         
       it("Создание экземпляра", function() {
-        dataAdapter = new GoogleSheetDataAdapter(null, null, null);
+        dataAdapter = new GoogleSheetDataAdapter(null, "wake", "wake");
   
         assert.equal(dataAdapter.spreadSheetId, null);
-        assert.equal(dataAdapter.entrySheetName, null);
-        assert.equal(dataAdapter.listSheetName, null);
+        assert.equal(dataAdapter.entrySheetName, "wake");
+        assert.equal(dataAdapter.listSheetName, "wake");
       });
     });
   

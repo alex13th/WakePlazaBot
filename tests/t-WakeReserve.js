@@ -118,7 +118,7 @@ describe("class WakeReserve", function() {
       reserve.start = startDateTime;
       reserve.count = 2;
 
-      let dataAdapter = new GoogleSheetDataAdapter("wake", null, null);
+      let dataAdapter = new GoogleSheetDataAdapter(null, "wake", "wake");
       let reserveRows = dataAdapter.getActiveReserveRows();
       let reserveArray = reserve.createReserveArray(reserveRows);
       reserve.reserveArray = reserveArray;

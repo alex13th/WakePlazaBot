@@ -114,12 +114,10 @@ describe("class SupReserve", function() {
       reserve.start = startDateTime;
       reserve.count = 2;
 
-      let dataAdapter = new GoogleSheetDataAdapter("sup", null, null);
+      let dataAdapter = new GoogleSheetDataAdapter(null, "reserve", "reserve");
       let reserveRows = dataAdapter.getActiveReserveRows();
       let reserveArray = reserve.createReserveArray(reserveRows);
       reserve.reserveArray = reserveArray;
-      // let conflictReserve = reserve.findConflict();
-      // assert.equal(conflictReserve, reserveArray[6]);
     });
   });
 

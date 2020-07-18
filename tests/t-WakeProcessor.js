@@ -33,7 +33,7 @@ describe("class WakeProcessor", function() {
 
   describe("Обработка пунктов меню", function() {
     let callbackProcessor = new WakeProcessor(new GoogleSheetDataAdapter(null, 
-      null, null));
+      "wake", "wake"));
     callbackProcessor.state.menu = "book";
 
     it("Обработка кнопки Сет", function() {

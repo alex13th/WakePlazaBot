@@ -101,7 +101,7 @@ describe("class Reserve", function() {
   
         reserve.start = startDateTime;
   
-        let dataAdapter = new GoogleSheetDataAdapter("reserve", null, null);
+        let dataAdapter = new GoogleSheetDataAdapter(null, "reserve", "reserve");
         let reserveRows = dataAdapter.getActiveReserveRows();
         let reserveArray = reserve.createReserveArray(reserveRows);
         reserve.reserveArray = reserveArray;
