@@ -7,33 +7,39 @@ class ChatProcessor {
     
     this.commandProcessors = {};
     this.callbackProcessors = {};
-    this.messageProcessors = {};
 
     this._command = null;
     this._callbackQuery = null;
 
+    this._hasCommand = false;
+    this._hasCallback = false;
+
     if ( update.hasOwnProperty('message') ) {
       this._message = update.message;
+      this._hasCommand = tgIsCommand(this._message);
     } else if ( update.hasOwnProperty('callback_query') ) {
+      this._hasCallback = true;
       this._callbackQuery = update.callback_query;
       this._message = update.callback_query.message;
     }
+
+    this._chatId = this._message.chat.id;
   }
 
   get chatId() {
-    return this._message.chat.id;
+    return this._chatId;
   }
 
   get hasCommand() {
-    return tgIsCommand(this._message);
+    return this._hasCommand;
   }
 
   get hasCallback() {
-    return (this._callbackQuery);
+    return this._hasCallback;
   }
 
   get command() {
-    if(!this._command && this.hasCommand)
+    if(!this._command && this._hasCommand)
       this._command = tgGetCommand(this._message);
 
     return this._command;
@@ -43,26 +49,30 @@ class ChatProcessor {
     return this._state;
   }
 
-  registerCommandProcessor(commandName, processor) {
-    this.commandProcessors[commandName] = processor;
+  registerCommandProcessor(commandName, processorClass, dataAdapter) {
+    let processorInfo = {};
+    processorInfo.processorClass = processorClass;
+    processorInfo.dataAdapter = dataAdapter;
+
+    this.commandProcessors[commandName] = processorInfo;
   }
 
-  registerCallbackProcessor(stateType, processor) {
-    this.callbackProcessors[stateType] = processor;
-  }
+  registerCallbackProcessor(stateType, processorClass, dataAdapter) {
+    let processorInfo = {};
+    processorInfo.processorClass = processorClass;
+    processorInfo.dataAdapter = dataAdapter;
 
-  registerMessageProcessor(stateType, processor) {
-    this.messageProcessors[stateType] = processor;
+    this.callbackProcessors[stateType] = processorInfo;
   }
 
   proceed() {
     let result = null;
 
-    if(this.hasCommand) {
+    if(this._hasCommand) {
       result = this.proceedCommand();
     };
 
-    if(this.hasCallback) {
+    if(this._hasCallback) {
       result = this.proceedCallback();
     }
 
@@ -75,13 +85,13 @@ class ChatProcessor {
     let result;
     let strResult;
     let cmd = this.command;
-    let processor = this.commandProcessors[cmd.name];
-
-    this._properies.deleteProperty(this.chatId);
+    let processorClass = this.commandProcessors[cmd.name].processorClass;
+    let dataAdapter = this.commandProcessors[cmd.name].dataAdapter;
+    let processor = new processorClass(dataAdapter);
 
     this._state = processor.proceedCommand(cmd, this._message.from);
 
-    let chatId = processor.message.chatId || this.chatId;
+    let chatId = processor.message.chatId || this._chatId;
     strResult = tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
     result = this.parseUpdate(strResult);
 
@@ -97,13 +107,16 @@ class ChatProcessor {
 
     if(!jsonState) {
       strResult = tgEditMessage(this._message, noMessageStateError, null);
-      tgPostMessage(this.chatId, helpText);
+      tgPostMessage(this._chatId, helpText);
       return;
     }
 
     let stateObject = JSON.parse(jsonState);
 
-    let processor = this.callbackProcessors[stateObject.type];
+    let processorClass = this.callbackProcessors[stateObject.type].processorClass;
+    let dataAdapter = this.callbackProcessors[stateObject.type].dataAdapter;
+    let processor = new processorClass(dataAdapter);
+
     processor.state.fromJSON(jsonState);
     processor.message.text = this._message.text;
 
@@ -117,7 +130,7 @@ class ChatProcessor {
     }
 
     if(processor.notice.text) {
-      tgPostMessage(processor.notice.chatId || this.chatId, processor.notice.text, processor.notice.keyboard);
+      tgPostMessage(processor.notice.chatId || this._chatId, processor.notice.text, processor.notice.keyboard);
     }
 
     tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);
@@ -133,7 +146,7 @@ class ChatProcessor {
   }
 
   loadState() {
-    let jsonState = this._properies.getProperty(this.chatId + '-' + this._message.message_id);
+    let jsonState = this._properies.getProperty(this._chatId + '-' + this._message.message_id);
     return jsonState;
   }
   

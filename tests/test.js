@@ -138,3 +138,6 @@ today.setHours(0, 0, 0, 0);
 
 let cache = new GoogleCache();
 let props = new GoogleProperties();
+
+let procClass = DefaultCommandProcessor;
+let proc = new procClass();

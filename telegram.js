@@ -1,5 +1,5 @@
 function tgIsCommand(msg) {
-  return msg.hasOwnProperty('entities') && msg.entities[0].type == 'bot_command';
+  return msg.hasOwnProperty('entities') && msg.entities[0].type === 'bot_command';
 }
 
 function tgGetCommand(msg) {
