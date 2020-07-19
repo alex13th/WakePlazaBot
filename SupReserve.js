@@ -18,6 +18,7 @@ class SupReserve  extends Reserve {
     this.fieldPositions['setType'] = 5;
     this.fieldPositions['count'] = 6;
     this.fieldPositions['bookCount'] = 7;
+    this.fieldPositions['phone'] = 8;
     // Array's field positions
   }
 
@@ -38,7 +39,7 @@ class SupReserve  extends Reserve {
     return result;
   }
 
-  getStateMessageText() {
+  getStateMessageText(showContact = false) {
     let result = '';
     let confictReserve = this.findConflict();
 
@@ -47,8 +48,14 @@ class SupReserve  extends Reserve {
       result += '\n' + stopIcon + confictReserve.toString();
     }
 
-    if(this.telegramName)
+    if(this.telegramName) {
       result += '\n' + strNameLabel + this.telegramName;
+    }
+
+    if(showContact && this.phone) {
+        result += '\n' + strPhoneLabel + this.phone;
+    }
+
     result += '\n' + strDayLabel + this.start.toLocaleDateString(dateLocale, dateOptions);
 
     if(this.startTime) {
@@ -69,6 +76,7 @@ class SupReserve  extends Reserve {
 
     this.setType = reserveRow[this.fieldPositions['setType']];
     this.bookCount = reserveRow[this.fieldPositions['bookCount']];
+    this.phone = reserveRow[this.fieldPositions['phone']];
   }
 
   toArray() {

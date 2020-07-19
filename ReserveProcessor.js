@@ -188,6 +188,7 @@ class ReserveProcessor {
     } else {
       let reserveArray = this.fillReserveArray();
       let reserve = reserveArray[data - 1];
+      let msgText;
 
       let buttons = [];
       if(this._user && admins.includes(this._user.id) ) {
@@ -200,10 +201,12 @@ class ReserveProcessor {
         button.text = strNoticeButton;
         button.callback_data = 'notice-' + reserve.telegramId;
         buttons.push([button]);
+        msgText = reserve.getStateMessageText(true);
+      } else {
+        msgText = reserve.getStateMessageText(false);
       }
       buttons.push([{text: strBackButton, callback_data: 'back'}]);
 
-      let msgText = reserve.getStateMessageText();
       let keyboard = {inline_keyboard: buttons};
   
       this.state.menu = 'details';

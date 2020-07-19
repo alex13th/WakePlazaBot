@@ -30,6 +30,7 @@ wakeValues.push([new Date("07.03.2020 19:58:48"),143929127,"sizhek",new Date("07
 wakeValues.push([new Date("07.03.2020 10:18:33"),143929127,"sizhek",new Date("07.06.2020 15:00:00"),new Date("07.06.2020 15:10:00"),"set",1,1,1]);
 wakeValues.push([new Date("07.03.2020 10:19:08"),143929127,"sizhek",new Date("07.07.2020 10:00:00"),new Date("07.07.2020 11:00:00"),"hour",1,1,1]);
 
+let userValues = [["telegam_id", "telegram_name", "phone_number"]];
 
 class GoogleProperties {
     constructor(){
@@ -84,15 +85,11 @@ class GoogleRange {
 
 class GoogleSheet {
     constructor(name) {
-      switch(name) {
-        case 'wake':
-          this.range = new GoogleRange(wakeValues.slice());
-          break;
-  
-        case 'reserve':
-          this.range = new GoogleRange(reserveValues.slice());
-          break;
-      }    
+      let sheets = {};
+      sheets['wake'] = new GoogleRange(wakeValues.slice());
+      sheets['reserve'] = new GoogleRange(reserveValues.slice());
+      sheets['users'] = new GoogleRange(userValues.slice());
+      this.range = sheets[name];
     }
 
     getDataRange() {
@@ -113,6 +110,7 @@ class GoogleSpreadsheet {
     this.sheets = {};
     this.sheets["reserve"] = new GoogleSheet("reserve");
     this.sheets["wake"] = new GoogleSheet("wake");
+    this.sheets["users"] = new GoogleSheet("users");
   }
 
   getSheetByName(name) {

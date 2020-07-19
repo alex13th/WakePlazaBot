@@ -41,6 +41,7 @@ class GoogleSheetDataAdapter {
 
   appendReserveRow(row) {
     let sheet = this.openSheet(this.entrySheetName);
+    row.push('=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))');
     sheet.appendRow(row);
     this.values = null;
   }

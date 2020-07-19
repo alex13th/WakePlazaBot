@@ -57,6 +57,7 @@ class SupProcessor extends ReserveProcessor {
     this.state.menu = 'main';
     this.message.text = strReserveComfirmedHeader;
     this.message.text += this.state.reserve.getStateMessageText();
+    this.message.text += strReserveComfirmedFooter;
     this.message.keyboard = null;
     this.callbackText = strReserveComfirmed;
   }

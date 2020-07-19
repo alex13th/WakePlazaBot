@@ -19,6 +19,7 @@ class WakeReserve extends Reserve {
     this.fieldPositions['count'] = 6;
     this.fieldPositions['board'] = 7;
     this.fieldPositions['hydro'] = 8;
+    this.fieldPositions['phone'] = 9;
     // Array's field positions
   }
 
@@ -43,7 +44,7 @@ class WakeReserve extends Reserve {
     return result;
   }
   
-  getStateMessageText() {
+  getStateMessageText(showContact = false) {
     let result = '';
     let confictReserve = this.findConflict();
 
@@ -52,8 +53,14 @@ class WakeReserve extends Reserve {
       result += '\n' + stopIcon + confictReserve.toString();
     }
 
-    if(this.telegramName)
+    if(this.telegramName) {
       result += '\n' + strNameLabel + this.telegramName;
+    }
+
+    if(showContact && this.phone) {
+        result += '\n' + strPhoneLabel + this.phone;
+    }
+
     result += '\n' + strDayLabel + this.start.toLocaleDateString(dateLocale, dateOptions);
 
     if(this.startTime) {
@@ -79,6 +86,7 @@ class WakeReserve extends Reserve {
     this.setType = reserveRow[this.fieldPositions['setType']];
     this.board = reserveRow[this.fieldPositions['board']];
     this.hydro = reserveRow[this.fieldPositions['hydro']];
+    this.phone = reserveRow[this.fieldPositions['phone']];
   }
 
   toArray() {

@@ -6,10 +6,11 @@ const WAKE_ACTIVE_SHEET_NAME = 'WakeboardActive';
 const SUP_SHEET_NAME = 'Supboard';
 const SUP_ACTIVE_SHEET_NAME = 'SupboardActive';
 
-
 let helpText = '<b>Список команд</b>';
 helpText += '\n/wake - забронировать катание на Вейкборде;';
 helpText += '\n/sup - забронировать Сапборд;';
+helpText += '\n/contact - предоставить/обновить контактные данные для возможности ';
+helpText += 'оперативной обратной связи.'
 helpText += '\n/help - справка по командам бота.'
 helpText += '\n\nВ случае необходимости, Вы всегда можете связаться ';
 helpText += 'с администратором <b>WAKEPLAZA</b> по телефону: <b>922-111</b>.'
@@ -28,6 +29,18 @@ wakeHelloText += '\nРекомендуем перед бронированием
 let supHelloText   = '<b>Сапборд - современно и душевно!</b>';
 supHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
 
+let getContactText = '<b>Контактная информация.</b>';
+getContactText += '\nПочему стоит предоставить контактную информацию:';
+getContactText += '\nВо-первых, даже если Вы будете немного опаздывать, мы сможем оперативно ';
+getContactText += 'связаться, не отменим бронь и не передадим время другими клиентам.';
+getContactText += '\nВо-вторых, в нашей жизни случаются разные непредвиденные ситуации, ';
+getContactText += 'такие например как технические неполадки оборудования и т.п. Соответственно, ';
+getContactText += 'быстрее всего мы сможем довести такую информацию до тех клиентов ';
+getContactText += 'контактную информацию которых мы знаем.';
+getContactText += '\nИ в конечном счете, мы сохраняем только номер телефона, ';
+getContactText += 'а доступ к нему имеют только администраторы ботаю.';
+
+let thanksContactText = 'Благодарим за предоставленную информацию!';
 //const scriptProperties = PropertiesService.getScriptProperties();
 
 // Date presentation parameters
@@ -53,7 +66,13 @@ const reloadIcon = '\ud83d\udd04';
 // Icons
 
 // Locale string definitions
-let noMessageStateError = stopIcon + ' Срок работы с этим сообщение истёк!';
+const noMessageStateError = stopIcon + ' Срок работы с этим сообщение истёк!';
+
+const strSendContact = 'Отправить контакт';
+const strSendContactButton = applyIcon + ' ' + strSendContact;
+
+const strRefuseContact = 'Пока не готов';
+const strRefuseContactButton = stopIcon + ' ' + strRefuseContact;
 
 const strSelect = 'Выбрать';
 
@@ -78,6 +97,9 @@ const strReloadButton = reloadIcon + ' ' + strReload;
 const strReloaded = 'Обновлен';
 const strReloadedLabel = '<b>' + strReloaded + ':</b> ';
 
+const strPhone = 'Телефон';
+const strPhoneLabel = '<b>' + strPhone + ':</b> ';
+
 const strBoardButton = boardIcon + ' ' + strWake;
 const strHydro = 'Гидрокостюм';
 const strHydroButton = hydroIcon + ' ' + strHydro;
@@ -91,6 +113,8 @@ const strRemoveHydro = 'Отмена аренды гидрокостюма';
 const strApply = 'Забронировать';
 const strReserveComfirmed = 'Бронь внесена!';
 const strReserveComfirmedHeader = '<b>' + strReserveComfirmed + '</b>\n';
+
+const strReserveComfirmedFooter = '\n\n' + noticeIcon + ' <b>ВНИМАНИЕ!</b>\nРекомендую выполнить команду /contact, чтобы отправить контактную информацию.';
 
 const strMainMenu = 'Гланое меню';
 

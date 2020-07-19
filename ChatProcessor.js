@@ -2,18 +2,23 @@ class ChatProcessor {
   constructor() {
     this.commandProcessors = {};
     this.callbackProcessors = {};
+    this.contactProcessors = [];
   }
 
   get chatId() {
     return this._chatId;
   }
 
+  get hasCallback() {
+    return this._hasCallback;
+  }
+
   get hasCommand() {
     return this._hasCommand;
   }
 
-  get hasCallback() {
-    return this._hasCallback;
+  get hasContact() {
+    return this._hasContact;
   }
 
   get command() {
@@ -43,6 +48,14 @@ class ChatProcessor {
     this.callbackProcessors[stateType] = processorInfo;
   }
 
+  registerContactProcessor(processorClass, dataAdapter) {
+    let processorInfo = {};
+    processorInfo.processorClass = processorClass;
+    processorInfo.dataAdapter = dataAdapter;
+
+    this.contactProcessors.push(processorInfo);
+  }
+
   proceed(strUpdate, properies, cache) {
     let result = null;
     this._update = this.parseUpdate(strUpdate);
@@ -51,6 +64,10 @@ class ChatProcessor {
 
     if(this._hasCommand) {
       result = this.proceedCommand();
+    };
+
+    if(this._hasContact) {
+      result = this.proceedContact();
     };
 
     if(this._hasCallback) {
@@ -81,6 +98,21 @@ class ChatProcessor {
         this._state.id = chatId + '-' + result.result.message_id;
       }
     }
+    return result;
+  }
+
+  proceedContact() {
+    let result;
+    let strResult;
+
+    for(let i = 0; i < this.contactProcessors.length; i++) {
+      let processorInfo = this.contactProcessors[i]
+      let processor = new processorInfo.processorClass(processorInfo.dataAdapter);
+      processor.proceedContact(this._message.contact);
+    }
+
+    strResult = tgPostMessage(this._chatId, thanksContactText, {remove_keyboard: true});
+
     return result;
   }
 
@@ -128,6 +160,7 @@ class ChatProcessor {
       if ( result.hasOwnProperty('message') ) {
         this._message = result.message;
         this._hasCommand = tgIsCommand(this._message);
+        this._hasContact = this._message.hasOwnProperty('contact');
       } else if ( result.hasOwnProperty('callback_query') ) {
         this._hasCallback = true;
         this._callbackQuery = result.callback_query;

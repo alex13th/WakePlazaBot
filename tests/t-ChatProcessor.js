@@ -1,11 +1,12 @@
 describe("class ChatProcessor", function() {
   describe("Проверка наличия функций регистрации обработчиков", function(){
-    let strUpdate, chatProcessor;
-    let cmdProccessor = {};
+    let strUpdate, chatProcessor, cmdProccessor, dataAdapter;
 
     before(function(){
       strUpdate = '{"message": {"chat": {"id": 586350636}, "entities": [{"type": "bot_command"}]}}';
       chatProcessor = new ChatProcessor();
+      cmdProccessor = {};
+      dataAdapter = null;
     });
 
     it("Проверка регистрация обработчика команд", function() {
@@ -16,7 +17,13 @@ describe("class ChatProcessor", function() {
 
     it("Проверка регистрация обработчика callback", function() {
       assert.isFunction(chatProcessor.registerCallbackProcessor);
-      chatProcessor.registerCallbackProcessor("wake", cmdProccessor);
+      chatProcessor.registerCallbackProcessor("wake", cmdProccessor, dataAdapter);
+      assert.deepEqual(chatProcessor.callbackProcessors["wake"].processorClass, cmdProccessor);
+    });
+
+    it("Проверка регистрация обработчика contact", function() {
+      assert.isFunction(chatProcessor.registerContactProcessor);
+      chatProcessor.registerContactProcessor(cmdProccessor, dataAdapter);
       assert.deepEqual(chatProcessor.callbackProcessors["wake"].processorClass, cmdProccessor);
     });
   });
@@ -64,6 +71,7 @@ describe("class ChatProcessor", function() {
       chatProcessor.registerCommandProcessor('start', DefaultCommandProcessor);
       chatProcessor.registerCommandProcessor('help', DefaultCommandProcessor);
       chatProcessor.registerCommandProcessor('wake', WakeProcessor);
+      chatProcessor.registerCommandProcessor('contact', ContactProcessor);
     });
 
     it("Проверка выполнения /start", function() {
@@ -79,6 +87,30 @@ describe("class ChatProcessor", function() {
     it("Проверка выполнения /wake", function() {
       let strUpdate = '{"update_id":354673864,"message":{"message_id":407,"from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1593765485,"text":"/wake","entities":[{"offset":0,"length":5,"type":"bot_command"}]}}';
       chatProcessor.proceed(strUpdate, props, cache);
+    });
+
+    it("Проверка выполнения /contact", function() {
+      let strUpdate = '{"update_id":354675882,"message":{"message_id":1829,"from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595136069,"text":"/contact","entities":[{"offset":0,"length":8,"type":"bot_command"}]}}';
+      chatProcessor.proceed(strUpdate, props, cache);
+    });
+  });
+
+  describe("Тестирование обработки контакта", function() {
+    let strUpdate, chatProcessor, dataAdapter;
+
+    beforeEach(function() {
+      dataAdapter = new GoogleSheetDataAdapter(null, "users", "users");
+      chatProcessor = new ChatProcessor();
+
+      chatProcessor.registerContactProcessor(ContactProcessor, dataAdapter);
+    });
+
+    it("Проверка выполнения", function() {
+      strUpdate = '{"update_id":354675889,"message":{"message_id":1842,"from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595136928,"reply_to_message":{"message_id":1841,"from":{"id":1273795086,"is_bot":true,"first_name":"DevWakeBot","username":"DevWakeBot"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595136924,"text":"Message","entities":[{"offset":0,"length":47,"type":"bold"}]},"contact":{"phone_number":"+79149523870","first_name":"Alexey","last_name":"Sukharev","user_id":586350636}}}';
+      chatProcessor.proceed(strUpdate, props, cache);
+
+      let rows = dataAdapter.getActiveReserveRows();
+      assert.deepEqual(rows[rows.length - 1], [586350636,	"Alexey",	"+79149523870", "=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))"]);
     });
   });
 
