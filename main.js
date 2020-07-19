@@ -6,7 +6,7 @@ function doPost(e) {
   strUpdate = e.postData.contents;
   
   if ( strUpdate ) {
-    let chatProcessor = new ChatProcessor(strUpdate, scriptProperties);
+    let chatProcessor = new ChatProcessor();
 
     chatProcessor.registerCommandProcessor('start', DefaultCommandProcessor);
     chatProcessor.registerCommandProcessor('help', DefaultCommandProcessor);
@@ -19,6 +19,6 @@ function doPost(e) {
     chatProcessor.registerCommandProcessor('sup', SupProcessor, supDataAdapter);
     chatProcessor.registerCallbackProcessor('sup', SupProcessor, supDataAdapter);
     
-    chatProcessor.proceed();
+    chatProcessor.proceed(strUpdate, scriptProperties);
   }
 }
