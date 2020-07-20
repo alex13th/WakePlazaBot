@@ -55,6 +55,7 @@ function tgEditMessage(msg, text, keyboard = null, mode = 'HTML') {
   }
   
   let data = {
+    muteHttpExceptions: true,
     method: 'post',
     payload: payload
   };
