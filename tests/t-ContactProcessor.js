@@ -24,7 +24,7 @@ describe("class ContactProcessor", function() {
 
       buttons.push([{text: strSendContactButton, request_contact: true}]);
       buttons.push([{text: strRefuseContactButton}]);
-      keyboard = {keyboard: buttons, one_time_keyboard: true};
+      keyboard = {keyboard: buttons, one_time_keyboard: true, resize_keyboard: true};
       resultMessage = {text: getContactText, keyboard: keyboard};
 
       processor.proceedCommand({name: "contact", params: null});
