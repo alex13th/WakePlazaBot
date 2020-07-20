@@ -68,8 +68,6 @@ describe("class WakeProcessor", function() {
     });
 
     it("Обработка кнопки Забронировать", function() {
-      let reserveRow = callbackProcessor.state.reserve.toArray();
-      reserveRow.push('=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))');
       callbackProcessor.state.menu = "book";
 
       let buttons = callbackProcessor.createCountButtons();
@@ -82,6 +80,8 @@ describe("class WakeProcessor", function() {
       msgText += strReserveComfirmedFooter;
 
       callbackProcessor.proceedCallback("apply");
+      let reserveRow = callbackProcessor.state.reserve.toArray();
+      reserveRow.push('=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))');
       reserveRows = callbackProcessor.dataAdapter.getActiveReserveRows();
 
       assert.equal(callbackProcessor.state.menu, "main");

@@ -51,6 +51,7 @@ class SupProcessor extends ReserveProcessor {
   }
 
   callApplyButton() {
+    this.state.reserve.createdAt = new Date();
     let row = this.state.reserve.toArray();
     this.dataAdapter.appendReserveRow(row);
 
