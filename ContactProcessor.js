@@ -26,7 +26,7 @@ class ContactProcessor {
 
     buttons.push([{text: strSendContactButton, request_contact: true}]);
     buttons.push([{text: strRefuseContactButton}]);
-    keyboard = {keyboard: buttons, one_time_keyboard: true};
+    keyboard = {keyboard: buttons, one_time_keyboard: true, resize_keyboard: true};
 
     this.message = {text: getContactText, keyboard: keyboard};
   }

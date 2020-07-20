@@ -21,11 +21,19 @@ class ChatProcessor {
     return this._hasContact;
   }
 
+  get hasResult() {
+    return this._hasResult;
+  }
+
   get command() {
     if(!this._command && this._hasCommand)
       this._command = tgGetCommand(this._message);
 
     return this._command;
+  }
+
+  get result() {
+    return this._result;
   }
 
   get state() {
@@ -57,7 +65,7 @@ class ChatProcessor {
   }
 
   proceed(strUpdate, properies, cache) {
-    let result = null;
+    let result;
     this._update = this.parseUpdate(strUpdate);
     this._cache = cache;
     this._properies = properies;
@@ -74,14 +82,20 @@ class ChatProcessor {
       result = this.proceedCallback();
     }
 
-    this.saveState();
+    if(result) {
+      this.saveState();
+    } else if(!(this._hasCommand || this._hasContact || this._hasCallback)) {
+      if(this._message.text === strRefuseContactButton) {
+        let strResult = tgPostMessage(this._chatId, regretMessageText, {remove_keyboard: true});
+        result = this.parseUpdate(strResult);
+      }
+    }
 
     return result;
   }
 
   proceedCommand() {
     let result;
-    let strResult;
     let cmd = this.command;
     let processorInfo = this.commandProcessors[cmd.name]
 
@@ -91,19 +105,19 @@ class ChatProcessor {
       this._state = processor.proceedCommand(cmd, this._message.from);
   
       let chatId = processor.message.chatId || this._chatId;
-      strResult = tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
+      let strResult = tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
       result = this.parseUpdate(strResult);
   
-      if(this._state) {
-        this._state.id = chatId + '-' + result.result.message_id;
+      if(this._state && this._hasResult) {
+        this._state.id = this._result.chat.id + '-' + this._result.message_id;
       }
     }
+
     return result;
   }
 
   proceedContact() {
-    let result;
-    let strResult;
+    let strResult, result;
 
     for(let i = 0; i < this.contactProcessors.length; i++) {
       let processorInfo = this.contactProcessors[i]
@@ -112,18 +126,19 @@ class ChatProcessor {
     }
 
     strResult = tgPostMessage(this._chatId, thanksContactText, {remove_keyboard: true});
+    result = this.parseUpdate(strResult);
 
     return result;
   }
 
   proceedCallback() {
-    let strResult;
+    let result, strResult;
     let jsonState = this.loadState();
 
     if(!jsonState) {
       strResult = tgEditMessage(this._message, noMessageStateError, null);
       tgPostMessage(this._chatId, helpText);
-      return;
+      return false;
     }
 
     let stateObject = JSON.parse(jsonState);
@@ -137,10 +152,12 @@ class ChatProcessor {
     this._state = processor.state;
 
     if(processor.message.chatId) {
-      tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
+      strResult = tgPostMessage(chatId, processor.message.text, processor.message.keyboard);
     } else {
       strResult = tgEditMessage(this._message, processor.message.text, processor.message.keyboard);
     }
+
+    result = this.parseUpdate(strResult);
 
     if(processor.notice.text) {
       tgPostMessage(processor.notice.chatId || this._chatId, processor.notice.text, processor.notice.keyboard);
@@ -148,7 +165,7 @@ class ChatProcessor {
 
     tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);
 
-    return this.parseUpdate(strResult);
+    return result;
   }
 
   parseUpdate(strUpdate) {
@@ -165,6 +182,9 @@ class ChatProcessor {
         this._hasCallback = true;
         this._callbackQuery = result.callback_query;
         this._message = result.callback_query.message;
+      } else if ( result.hasOwnProperty('result') ) {
+        this._hasResult = true;
+        this._result = result.result;
       }
 
       this._chatId = this._message.chat.id;

@@ -62,6 +62,33 @@ function tgEditMessage(msg, text, keyboard = null, mode = 'HTML') {
   return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
 }
 
+function tgEditMessageReplyMarkup(msg, text = null, keyboard = null, mode = 'HTML') {
+  let chatId = msg.chat.id;
+  let msgId = msg.message_id;
+  
+  let payload = {
+    method: 'editMessageReplyMarkup',
+    chat_id: String(chatId),
+    message_id: String(msgId),
+    parse_mode: mode
+  };
+  
+  if(text) {
+    payload.text = text;
+  }
+
+  if(keyboard) {
+    payload.reply_markup = JSON.stringify(keyboard);
+  }
+  
+  let data = {
+    method: 'post',
+    payload: payload
+  };
+  
+  return UrlFetchApp.fetch('https://api.telegram.org/bot' + API_TOKEN + '/', data);
+}
+
 function tgCallbackToQuery(callbackId, callbackText) {
   var payload = {
     'method': 'answerCallbackQuery',

@@ -105,12 +105,19 @@ describe("class ChatProcessor", function() {
       chatProcessor.registerContactProcessor(ContactProcessor, dataAdapter);
     });
 
-    it("Проверка выполнения", function() {
+    it("Проверка получения контакта", function() {
       strUpdate = '{"update_id":354675889,"message":{"message_id":1842,"from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595136928,"reply_to_message":{"message_id":1841,"from":{"id":1273795086,"is_bot":true,"first_name":"DevWakeBot","username":"DevWakeBot"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595136924,"text":"Message","entities":[{"offset":0,"length":47,"type":"bold"}]},"contact":{"phone_number":"+79149523870","first_name":"Alexey","last_name":"Sukharev","user_id":586350636}}}';
       chatProcessor.proceed(strUpdate, props, cache);
 
       let rows = dataAdapter.getActiveReserveRows();
       assert.deepEqual(rows[rows.length - 1], [586350636,	"Alexey",	"+79149523870", "=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))"]);
+    });
+
+    it("Проверка отказа в предоставлении контакта", function() {
+      strUpdate = '{"update_id":354675985,"message":{"message_id":1928,"from":{"id":586350636,"is_bot":false,"first_name":"Alexey","last_name":"Sukharev","language_code":"en"},"chat":{"id":586350636,"first_name":"Alexey","last_name":"Sukharev","type":"private"},"date":1595200057,"text":"\u26d4\ufe0f \u041f\u043e\u043a\u0430 \u043d\u0435 \u0433\u043e\u0442\u043e\u0432"}}';
+      chatProcessor.proceed(strUpdate, props, cache);
+
+      assert.equal(chatProcessor.hasContact, false);
     });
   });
 

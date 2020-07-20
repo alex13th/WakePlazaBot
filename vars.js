@@ -6,50 +6,6 @@ const WAKE_ACTIVE_SHEET_NAME = 'WakeboardActive';
 const SUP_SHEET_NAME = 'Supboard';
 const SUP_ACTIVE_SHEET_NAME = 'SupboardActive';
 
-let helpText = '<b>Список команд</b>';
-helpText += '\n/wake - забронировать катание на Вейкборде;';
-helpText += '\n/sup - забронировать Сапборд;';
-helpText += '\n/contact - предоставить/обновить контактные данные для возможности ';
-helpText += 'оперативной обратной связи.'
-helpText += '\n/help - справка по командам бота.'
-helpText += '\n\nВ случае необходимости, Вы всегда можете связаться ';
-helpText += 'с администратором <b>WAKEPLAZA</b> по телефону: <b>922-111</b>.'
-
-let helloText = '<b>Привет!</b>';
-helloText += '\nЭто наш новый сервис для бронирования времени на вейк-станции.';
-helloText += 'Сейчас он находится в процессе тестирования, но вполне работоспособен.';
-helloText += '\n\n' + helpText;
-
-let noticeText = 'Для подтверждения вашего бронирования просим вас ';
-noticeText += 'связаться по телефону с администратором WAKEPLAZA <b>922-111</b>.';
-
-let wakeHelloText  = '<b>Вейкборд - великолепный выбор!</b>';
-wakeHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
-
-let supHelloText   = '<b>Сапборд - современно и душевно!</b>';
-supHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
-
-let getContactText = '<b>Контактная информация.</b>';
-getContactText += '\nПочему стоит предоставить контактную информацию:';
-getContactText += '\nВо-первых, даже если Вы будете немного опаздывать, мы сможем оперативно ';
-getContactText += 'связаться, не отменим бронь и не передадим время другими клиентам.';
-getContactText += '\nВо-вторых, в нашей жизни случаются разные непредвиденные ситуации, ';
-getContactText += 'такие например как технические неполадки оборудования и т.п. Соответственно, ';
-getContactText += 'быстрее всего мы сможем довести такую информацию до тех клиентов ';
-getContactText += 'контактную информацию которых мы знаем.';
-getContactText += '\nИ в конечном счете, мы сохраняем только номер телефона, ';
-getContactText += 'а доступ к нему имеют только администраторы ботаю.';
-
-let thanksContactText = 'Благодарим за предоставленную информацию!';
-//const scriptProperties = PropertiesService.getScriptProperties();
-
-// Date presentation parameters
-const datetimeOptions = {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'};
-const dateOptions = {year: 'numeric', month: 'numeric', day: 'numeric'};
-const timeOptions = {hour: '2-digit', minute: '2-digit'};
-const dateLocale = "ru";
-// Date presentation parameters
-
 // Icons
 const hourIcon = '\u23f0';
 const setIcon = '\u23f1';
@@ -63,7 +19,60 @@ const stopIcon = '\u26d4\ufe0f'
 const cancelIcon = '\u274c';
 const noticeIcon = '\u2139\ufe0f';
 const reloadIcon = '\ud83d\udd04';
+const pensiveIcon = '\ud83d\ude14';
+const grinningIcon = '\ud83d\ude00';
+const phoneIcon = '\ud83d\udcde';
 // Icons
+
+let helpText = '<b>Список команд</b>';
+helpText += '\n/wake - забронировать катание на Вейкборде;';
+helpText += '\n/sup - забронировать Сапборд;';
+helpText += '\n/contact - предоставить/обновить контактные данные для возможности ';
+helpText += 'оперативной обратной связи.'
+helpText += '\n/help - справка по командам бота.'
+helpText += '\n\nВ случае необходимости, Вы всегда можете связаться ';
+helpText += 'с администратором <b>WAKEPLAZA</b> по телефону: <b>922-111</b>.'
+
+let helloText = '<b>Привет!</b>';
+helloText += '\nЭто наш новый сервис для бронирования времени на вейк-станции. ';
+helloText += 'Сейчас он находится в процессе тестирования, но вполне работоспособен.';
+helloText += '\n\n' + helpText;
+
+let noticeText = 'Для подтверждения вашего бронирования просим вас ';
+noticeText += 'связаться по телефону с администратором WAKEPLAZA <b>922-111</b>.';
+
+let wakeHelloText  = '<b>Вейкборд - великолепный выбор!</b>';
+wakeHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
+
+let supHelloText   = '<b>Сапборд - современно и душевно!</b>';
+supHelloText += '\nРекомендуем перед бронированием посмотреть список активных бронирований.';
+
+let getContactText = noticeIcon + ' <b>Почему стоит предоставить контактную информацию:</b>';
+getContactText += '\n\n<b>Во-первых</b>, Вам достаточно сделать это <b>один раз</b>, ';
+getContactText += 'а в дальнейшем при желании можно будет ее просто обновить.';
+getContactText += '\n\n<b>Во-вторых</b>, даже если Вы будете немного опаздывать, мы сможем оперативно ';
+getContactText += 'связаться, не отменим бронь и не передадим время другими клиентам.';
+getContactText += '\n\n<b>В-третьих</b>, в нашей жизни случаются разные непредвиденные ситуации, ';
+getContactText += 'такие например как технические неполадки оборудования и т.п. Соответственно, ';
+getContactText += 'быстрее всего мы сможем довести такую информацию до тех клиентов ';
+getContactText += 'контактную информацию которых мы знаем.';
+getContactText += '\n\nВ конечном счете, мы сохраняем только номер телефона, ';
+getContactText += 'а доступ к нему имеют <b>только администраторы</b> бота.';
+
+let regretMessageText = '<b>Очень жаль!</b> ' + pensiveIcon;
+regretMessageText += ' \n\nЕсли передумаете Вы всегда можете воспользоваться командой /contact'
+
+
+let thanksContactText = '<b>Это просто здорово!</b> ' + grinningIcon;
+thanksContactText += '\nТеперь нам будет проще связаться с Вами! ' + phoneIcon;
+//const scriptProperties = PropertiesService.getScriptProperties();
+
+// Date presentation parameters
+const datetimeOptions = {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+const dateOptions = {year: 'numeric', month: 'numeric', day: 'numeric'};
+const timeOptions = {hour: '2-digit', minute: '2-digit'};
+const dateLocale = "ru";
+// Date presentation parameters
 
 // Locale string definitions
 const noMessageStateError = stopIcon + ' Срок работы с этим сообщение истёк!';

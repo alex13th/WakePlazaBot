@@ -18,6 +18,40 @@ function tgEditMessage(msg, text, keyboard, mode = 'HTML') {
   return replyMessage;
 }
 
+function tgEditMessageReplyMarkup(msg, text = null, keyboard = null, mode = 'HTML') {
+  let replyMessage = '{"ok":true,"result":{"message_id":1484,';
+  replyMessage += '"from":{"id":1273795086,"is_bot":true,';
+  replyMessage += '"first_name":"DevWakeBot","username":"DevWakeBot"},';
+  replyMessage += '"chat":{"id":586350636,"first_name":"Alexey",';
+  replyMessage += '"last_name":"Sukharev","type":"private"},';
+  replyMessage += '"date":1594189990,"text":"Тестовое сообщение"}}';
+  
+  let chatId = msg.chat.id;
+  let msgId = msg.message_id;
+  
+  let payload = {
+    method: 'editMessageReplyMarkup',
+    chat_id: String(chatId),
+    message_id: String(msgId),
+    parse_mode: mode
+  };
+  
+  if(text) {
+    payload.text = text;
+  }
+
+  if(keyboard) {
+    payload.reply_markup = JSON.stringify(keyboard);
+  }
+  
+  let data = {
+    method: 'post',
+    payload: payload
+  };
+
+  return replyMessage;
+}
+
 function tgCallbackToQuery(callbackId, callbackText) {
   return true;
 }
