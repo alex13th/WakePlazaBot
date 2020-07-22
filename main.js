@@ -2,7 +2,7 @@ const scriptProperties = PropertiesService.getScriptProperties();
 
 function doPost(e) {
   
-  let strUpdate
+  let strUpdate;
   strUpdate = e.postData.contents;
   
   if ( strUpdate ) {
@@ -23,6 +23,33 @@ function doPost(e) {
     chatProcessor.registerCommandProcessor('contact', ContactProcessor);
     chatProcessor.registerContactProcessor(ContactProcessor, userDataAdapter);
 
+
     chatProcessor.proceed(strUpdate, scriptProperties);
   }
+}
+
+function delStates() {
+  let props = PropertiesService.getScriptProperties();
+  let stateProps = props.getProperties();
+  let delDate = new Date();
+  let delCount = 0;
+  delDate.setDate(delDate.getDate() - 7);
+  
+  Logger.log('********************************************************************************');
+  Logger.log('Start time: ' + (new Date()).toLocaleDateString(dateLocale, datetimeSecOptions) );
+  Logger.log('Start States count: ' + Object.keys(stateProps).length );
+
+  for(let stateProp in stateProps) {
+    let state = JSON.parse(stateProps[stateProp]);
+    if(!state.start || state.start < delDate.getTime()) {
+      props.deleteProperty(stateProp);
+      delCount++;
+    }
+  }
+
+  stateProps = props.getProperties();
+  Logger.log('Deleted States count: ' + delCount );
+  Logger.log('Finish States count: ' + Object.keys(stateProps).length );
+  Logger.log('Finish time: ' + (new Date()).toLocaleDateString(dateLocale, datetimeSecOptions) );
+  Logger.log('********************************************************************************');
 }

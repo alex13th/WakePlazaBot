@@ -1,5 +1,5 @@
 // Class WakeProcessor implement CommandProcessor and CallbackProcessor interfaces
-// CommandProcessor - method proceedCommand()
+// CommandProcessor - method proceedCommand() 
 // CallbackProcessor - method proceedCallback() is inherited from ReserveCallbackProcessor.
 
 class WakeProcessor extends ReserveProcessor {
@@ -56,19 +56,6 @@ class WakeProcessor extends ReserveProcessor {
       [{text: strMyReserveList, callback_data: 'myList'}], 
       [{text: strReserveList, callback_data: 'list'}]]};
     this.callbackText = strMainMenu;
-  }
-
-  callApplyButton() {
-    this.state.reserve.createdAt = new Date();
-    let row = this.state.reserve.toArray();
-    this.dataAdapter.appendReserveRow(row);
-
-    this.state.menu = 'main';
-    this.message.text = strReserveComfirmedHeader;
-    this.message.text += this.state.reserve.getStateMessageText();
-    this.message.text += strReserveComfirmedFooter;
-    this.message.keyboard = null;
-    this.callbackText = strReserveComfirmed;
   }
 
   callSetMenu(data) {

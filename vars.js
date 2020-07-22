@@ -6,6 +6,14 @@ const WAKE_ACTIVE_SHEET_NAME = 'WakeboardActive';
 const SUP_SHEET_NAME = 'Supboard';
 const SUP_ACTIVE_SHEET_NAME = 'SupboardActive';
 
+// Date presentation parameters
+const datetimeOptions = {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'};
+const datetimeSecOptions = {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
+const dateOptions = {year: 'numeric', month: 'numeric', day: 'numeric'};
+const timeOptions = {hour: '2-digit', minute: '2-digit'};
+const dateLocale = "ru";
+// Date presentation parameters
+
 // Icons
 const hourIcon = '\u23f0';
 const setIcon = '\u23f1';
@@ -15,7 +23,8 @@ const boardIcon = '\ud83c\udfc4\u200d\u2642\ufe0f';
 const hydroIcon = '\ud83d\udc59';
 const applyIcon = '\ud83d\udc4c';
 const beginIcon = '\ud83d\udc49';
-const stopIcon = '\u26d4\ufe0f'
+const noEntryIcon  = '\u26d4\ufe0f';
+const stopIcon = '\ud83d\uded1';
 const cancelIcon = '\u274c';
 const noticeIcon = '\u2139\ufe0f';
 const reloadIcon = '\ud83d\udd04';
@@ -67,13 +76,6 @@ let thanksContactText = '<b>Это просто здорово!</b> ' + grinning
 thanksContactText += '\nТеперь нам будет проще связаться с Вами! ' + phoneIcon;
 //const scriptProperties = PropertiesService.getScriptProperties();
 
-// Date presentation parameters
-const datetimeOptions = {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'};
-const dateOptions = {year: 'numeric', month: 'numeric', day: 'numeric'};
-const timeOptions = {hour: '2-digit', minute: '2-digit'};
-const dateLocale = "ru";
-// Date presentation parameters
-
 // Locale string definitions
 const noMessageStateError = stopIcon + ' Срок работы с этим сообщение истёк!';
 
@@ -122,8 +124,10 @@ const strRemoveHydro = 'Отмена аренды гидрокостюма';
 const strApply = 'Забронировать';
 const strReserveComfirmed = 'Бронь внесена!';
 const strReserveComfirmedHeader = '<b>' + strReserveComfirmed + '</b>\n';
-
 const strReserveComfirmedFooter = '\n\n' + noticeIcon + ' <b>ВНИМАНИЕ!</b>\nРекомендую выполнить команду /contact, чтобы отправить контактную информацию.';
+const strReserveRefused = 'Ошибка бронирования!';
+const strReserveRefusedHeader = stopIcon + ' <b>' + strReserveRefused + '</b>';
+const strReserveRefusedFooter = '\n\n'  + noticeIcon + ' <b>ВНИМАНИЕ!</b>\nСожалем, но Вам придётся изменить параметры бронирования, т.к. кто-то уже успел занять это время.';
 
 const strMainMenu = 'Гланое меню';
 

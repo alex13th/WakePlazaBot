@@ -314,6 +314,30 @@ class ReserveProcessor {
     this.callbackText = strNotice + ': ' + data;
   }
 
+  callApplyButton() {
+    this.fillReserveArray();
+    this.state.reserve.findConflict();
+
+    if(this.state.reserve.isCompleted) {
+      this.state.reserve.createdAt = new Date();
+      let row = this.state.reserve.toArray();
+      this.dataAdapter.appendReserveRow(row);
+
+      this.state.menu = 'main';
+      this.message.text = strReserveComfirmedHeader;
+      this.message.text += this.state.reserve.getStateMessageText();
+      this.message.text += strReserveComfirmedFooter;
+      this.message.keyboard = null;
+      this.callbackText = strReserveComfirmed;
+    } else {
+      this.callBookButton(false);
+      this.message.text = strReserveRefusedHeader;
+      this.message.text += this.state.reserve.getStateMessageText();
+      this.message.text += strReserveRefusedFooter;
+      this.callbackText = strReserveRefused;
+    }
+  }
+
   createBookMenuKeyboard() {
     let buttons = [];
     buttons.push([{text: strDateButton, callback_data: "date"}]);

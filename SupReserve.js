@@ -45,7 +45,7 @@ class SupReserve  extends Reserve {
 
     if(this.conflictCount > this.maxConfictCount) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + confictReserve.toString();
+      result += '\n' + noEntryIcon + confictReserve.toString();
     }
 
     if(this.telegramName) {

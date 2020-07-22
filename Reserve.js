@@ -142,7 +142,7 @@ class Reserve {
 
     if(this.conflictCount > this.maxConfictCount) {
       result += '\n' + strReserveConflict;
-      result += '\n' + stopIcon + this.conflictReserve.toString();
+      result += '\n' + noEntryIcon + this.conflictReserve.toString();
     }
 
     if(this.telegramName)

@@ -74,10 +74,10 @@ describe("class SupProcessor", function() {
 
     it("Обработка кнопки Забронировать", function() {
       callbackProcessor.state.menu = "book";
+      callbackProcessor.state.reserve.start.setHours(11, 0, 0);
 
       let buttons = callbackProcessor.createCountButtons();
       buttons.push([{text: strBackButton, callback_data: 'back'}]);
-
       let keyboard = null;
 
       let msgText = strReserveComfirmedHeader;
@@ -94,6 +94,29 @@ describe("class SupProcessor", function() {
       assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
       assert.equal(callbackProcessor.callbackText, strReserveComfirmed);
       assert.deepEqual(reserveRows[reserveRows.length - 1], reserveRow);
+    });
+
+    it("Обработка кнопки Забронировать с ошибкой", function() {
+      callbackProcessor.state.menu = "book";
+      let reservArray = callbackProcessor.fillReserveArray();
+
+      callbackProcessor.state.reserve.start = reservArray[3].start;
+      callbackProcessor.state.reserve.findConflict();
+
+      let rowCount = reserveRows.length;
+      let keyboard = callbackProcessor.createBookMenuKeyboard();
+
+      let msgText = strReserveRefusedHeader;
+      msgText += callbackProcessor.state.reserve.getStateMessageText();
+      msgText += strReserveRefusedFooter;
+
+      callbackProcessor.proceedCallback("apply");
+
+      assert.equal(callbackProcessor.state.menu, "book");
+      assert.equal(callbackProcessor.message.text, msgText);
+      assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
+      assert.equal(callbackProcessor.callbackText, strReserveRefused);
+      assert.deepEqual(reserveRows.length, rowCount);
     });
   });
 

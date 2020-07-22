@@ -4,6 +4,7 @@ class GoogleSheetDataAdapter {
     this.entrySheetName = entrySheetName;
     this.listSheetName = listSheetName;
     this.values = null;
+    this.needReload = false;
   }
 
   openSheet(sheetName) {
@@ -20,9 +21,10 @@ class GoogleSheetDataAdapter {
 
     let sheet = this.openSheet(this.listSheetName);
 
-    if(!this.values) {
+    if(!this.values || this.needReload) {
       this.values = sheet.getDataRange().getValues();
       this.values.splice(0, 1);
+      this.needReload =false;
     }
 
     if(keyColumnNum === null) {

@@ -50,19 +50,6 @@ class SupProcessor extends ReserveProcessor {
     this.callbackText = strMainMenu;
   }
 
-  callApplyButton() {
-    this.state.reserve.createdAt = new Date();
-    let row = this.state.reserve.toArray();
-    this.dataAdapter.appendReserveRow(row);
-
-    this.state.menu = 'main';
-    this.message.text = strReserveComfirmedHeader;
-    this.message.text += this.state.reserve.getStateMessageText();
-    this.message.text += strReserveComfirmedFooter;
-    this.message.keyboard = null;
-    this.callbackText = strReserveComfirmed;
-  }
-
   callSetMenu(data) {
     if(data === 'back') {
       this.callBookButton(true);

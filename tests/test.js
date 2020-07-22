@@ -4,7 +4,7 @@ reserveValues.push(["created_at","telegam_id","telegram_name","book_start","book
 reserveValues.push([new Date("07.03.2020 13:14:36"),329454218,"Misha V",new Date("07.04.2020 10:00:00"),new Date("07.04.2020 11:00:00"),1,1,1]);
 reserveValues.push([new Date("07.03.2020 13:32:20"),143929127,"sizhek",new Date("07.04.2020 11:30:00"),new Date("07.04.2020 11:50:00"),2,4,1]);
 reserveValues.push([new Date("07.03.2020 10:15:37"),143929127,"sizhek",new Date("07.04.2020 12:00:00"),new Date("07.04.2020 12:20:00"),2,4,1]);
-reserveValues.push([new Date("07.03.2020 11:16:40"),329454218,"Misha V",new Date("07.04.2020 12:00:00"),new Date("07.04.2020 13:00:00"),1,4,0]);
+reserveValues.push([new Date("07.03.2020 11:16:40"),329454218,"Misha V",new Date("07.04.2020 12:00:00"),new Date("07.04.2020 13:00:00"),1,4,4]);
 reserveValues.push([new Date("07.03.2020 10:17:19"),143929127,"sizhek",new Date("07.04.2020 13:00:00"),new Date("07.04.2020 13:10:00"),1,4,0]);
 reserveValues.push([new Date("07.03.2020 11:18:32"),329454218,"Misha V",new Date("07.04.2020 13:00:00"),new Date("07.04.2020 13:30:00"),3,4,1]);
 reserveValues.push([new Date("07.02.2020 21:05:12"),480666793,"topskiipavel",new Date("07.04.2020 14:00:00"),new Date("07.04.2020 15:00:00"),1,4,0]);

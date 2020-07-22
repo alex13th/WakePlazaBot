@@ -28,62 +28,95 @@ describe("class GoogleSheetDataAdapter", function() {
           assert.equal(reserveRows[0].length, 9);
         });
       });
+
+      describe("Получение списка активных резервирований с обновлением", function() {
+        let reserveRows, rowCount, sheet;
+
+        before(function() {
+          sheet = dataAdapter.openSheet("wake");
+          rowCount = sheet.getDataRange().getValues().length - 1; // Минус заголовок
+          dataAdapter.getActiveReserveRows().length; // Первичное получение строк
+          sheet.appendRow([]); // Добавление строки в БД извне
+        });
   
+        it("Проверка количеств строк без Reload", function() {
+          reserveRows = dataAdapter.getActiveReserveRows();
+          assert.equal(reserveRows.length, rowCount);
+        });
+  
+        it("Проверка количеств строк с Reload", function() {
+          rowCount = sheet.getDataRange().getValues().length - 1;
+          dataAdapter.needReload = true;
+          reserveRows = dataAdapter.getActiveReserveRows();
+          assert.equal(reserveRows.length, rowCount);
+        });
+      });
+  
+
       describe("Проверка добавления строки", function() {
-        let reserveRow;
-        let reserveRows;
+        let reserveRow, reserveRows, prevRowCount;
   
-        it("Добавление строки", function() {
+        before(function() {
           reserveRow = [new Date(),329454218,"Misha V",new Date("06.07.2020 10:00:00"),	new Date("06.07.2020 11:00:00"), "hour",1,1,1];
+          prevRowCount = dataAdapter.getActiveReserveRows().length;
+        });
+
+        it("Добавление строки", function() {
           dataAdapter.appendReserveRow(reserveRow);
           reserveRows = dataAdapter.getActiveReserveRows();
         });
   
         it("Проверка количеств строк", function() {
-          assert.equal(reserveRows.length, 13);
+          assert.equal(reserveRows.length, prevRowCount + 1);
         });
   
         it("Проверка последней строки", function() {
-          assert.deepEqual(reserveRows[12][0], reserveRow[0]);
-          assert.equal(reserveRows[12][1], reserveRow[1]);
-          assert.equal(reserveRows[12][2], reserveRow[2]);
-          assert.deepEqual(reserveRows[12][3], reserveRow[3]);
-          assert.deepEqual(reserveRows[12][4], reserveRow[4]);
-          assert.equal(reserveRows[12][5], reserveRow[5]);
-          assert.equal(reserveRows[12][6], reserveRow[6]);
-          assert.equal(reserveRows[12][7], reserveRow[7]);
-          assert.equal(reserveRows[12][8], reserveRow[8]);
+          let rowNum = reserveRows.length - 1;
+          assert.deepEqual(reserveRows[rowNum][0], reserveRow[0]);
+          assert.equal(reserveRows[rowNum][1], reserveRow[1]);
+          assert.equal(reserveRows[rowNum][2], reserveRow[2]);
+          assert.deepEqual(reserveRows[rowNum][3], reserveRow[3]);
+          assert.deepEqual(reserveRows[rowNum][4], reserveRow[4]);
+          assert.equal(reserveRows[rowNum][5], reserveRow[5]);
+          assert.equal(reserveRows[rowNum][6], reserveRow[6]);
+          assert.equal(reserveRows[rowNum][7], reserveRow[7]);
+          assert.equal(reserveRows[rowNum][8], reserveRow[8]);
         });
       });
   
       describe("Проверка удаления строки", function() {
-        let reserveRow;
-        let reserveRows;
+        let lastReserveRow, reserveRows, prevRowCount;
   
-        it("Удаление строки", function() {
+        before(function() {
+          prevRowCount = dataAdapter.getActiveReserveRows().length;
+
           idColumnNumber = 0;
           idValue = new Date("07.02.2020 21:05:12");
           reserveRows = dataAdapter.getActiveReserveRows();
-          reserveRow = reserveRows[12];
-  
+          lastReserveRow = reserveRows[reserveRows.length - 1];
+        });
+
+        it("Удаление строки", function() {
           dataAdapter.deleteReserveRow(idColumnNumber, idValue);
           reserveRows = dataAdapter.getActiveReserveRows();
         });
   
         it("Проверка количеств строк", function() {
-          assert.equal(reserveRows.length, 12);
+          assert.equal(reserveRows.length, prevRowCount - 1);
         });
   
         it("Проверка последней строки", function() {
-          assert.deepEqual(reserveRows[11][0], reserveRow[0]);
-          assert.equal(reserveRows[11][1], reserveRow[1]);
-          assert.equal(reserveRows[11][2], reserveRow[2]);
-          assert.deepEqual(reserveRows[11][3], reserveRow[3]);
-          assert.deepEqual(reserveRows[11][4], reserveRow[4]);
-          assert.equal(reserveRows[11][5], reserveRow[5]);
-          assert.equal(reserveRows[11][6], reserveRow[6]);
-          assert.equal(reserveRows[11][7], reserveRow[7]);
-          assert.equal(reserveRows[11][8], reserveRow[8]);
+          let rowNum = reserveRows.length - 1;
+
+          assert.deepEqual(reserveRows[rowNum][0], lastReserveRow[0]);
+          assert.equal(reserveRows[rowNum][1], lastReserveRow[1]);
+          assert.equal(reserveRows[rowNum][2], lastReserveRow[2]);
+          assert.deepEqual(reserveRows[rowNum][3], lastReserveRow[3]);
+          assert.deepEqual(reserveRows[rowNum][4], lastReserveRow[4]);
+          assert.equal(reserveRows[rowNum][5], lastReserveRow[5]);
+          assert.equal(reserveRows[rowNum][6], lastReserveRow[6]);
+          assert.equal(reserveRows[rowNum][7], lastReserveRow[7]);
+          assert.equal(reserveRows[rowNum][8], lastReserveRow[8]);
         });
       });
     });
