@@ -21,14 +21,15 @@ function tgGetCommand(msg) {
 
 function tgPostMessage(chatId, text, keyboard = null, mode = 'HTML') {
   var payload = {
-    'method': 'sendMessage',
-    'chat_id': String(chatId),
-    'text': text,
-    'parse_mode': mode
+    method: 'sendMessage',
+    chat_id: String(chatId),
+    text: text,
+    parse_mode: mode
   }
   var data = {
-    "method": "post",
-    "payload": payload
+    method: "post",
+    muteHttpExceptions: true,
+    payload: payload
   }
   
   if(keyboard) {
@@ -55,8 +56,8 @@ function tgEditMessage(msg, text, keyboard = null, mode = 'HTML') {
   }
   
   let data = {
-    muteHttpExceptions: true,
     method: 'post',
+    muteHttpExceptions: true,
     payload: payload
   };
   

@@ -159,8 +159,9 @@ class ChatProcessor {
 
     result = this.parseUpdate(strResult);
 
-    if(processor.notice.text) {
-      tgPostMessage(processor.notice.chatId || this._chatId, processor.notice.text, processor.notice.keyboard);
+    for(let i = 0; i < processor.notices.length; i++) {
+      let notice = processor.notices[i];
+      tgPostMessage(notice.chatId || this._chatId, notice.text, notice.keyboard);
     }
 
     tgCallbackToQuery(this._callbackQuery.id, processor.callbackText);

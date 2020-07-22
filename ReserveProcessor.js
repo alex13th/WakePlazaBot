@@ -2,7 +2,7 @@ class ReserveProcessor {
   constructor(dataAdapter, state) {
     this.callbackText = '';
     this.message = {};
-    this.notice = {};
+    this.notices = [];
     this.dataAdapter = dataAdapter;
     
     if(state) {
@@ -308,9 +308,7 @@ class ReserveProcessor {
 
   callNoticeButton(data) {
     this.callListButton();
-    this.notice.text = noticeText;
-    this.notice.chatId = data;
-
+    this.notices.push({text: noticeText, chatId: data});
     this.callbackText = strNotice + ': ' + data;
   }
 
@@ -329,6 +327,15 @@ class ReserveProcessor {
       this.message.text += strReserveComfirmedFooter;
       this.message.keyboard = null;
       this.callbackText = strReserveComfirmed;
+
+      // Notice admins
+      let adminMsgText = this.state.reserve.getStateMessageText();
+      for(let i = 0; i < admins.length; i++) {
+        if(admins[i] != this._user.id) {
+          this.notices.push({text: adminMsgText, chatId: admins[i]});
+        }
+      }
+
     } else {
       this.callBookButton(false);
       this.message.text = strReserveRefusedHeader;

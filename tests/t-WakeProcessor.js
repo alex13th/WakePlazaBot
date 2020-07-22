@@ -79,7 +79,7 @@ describe("class WakeProcessor", function() {
       msgText += callbackProcessor.state.reserve.getStateMessageText();
       msgText += strReserveComfirmedFooter;
 
-      callbackProcessor.proceedCallback("apply");
+      callbackProcessor.proceedCallback("apply", {id: 123});
       let reserveRow = callbackProcessor.state.reserve.toArray();
       reserveRow.push('=IFERROR(VLOOKUP(B:B;Users!A:C;3;FALSE))');
       reserveRows = callbackProcessor.dataAdapter.getActiveReserveRows();

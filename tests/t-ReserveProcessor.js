@@ -333,8 +333,8 @@ describe("class ReserveProcessor", function() {
 
       assert.equal(callbackProcessor.state.menu, 'list');
       assert.deepEqual(callbackProcessor.message.keyboard, keyboard);
-      assert.equal(callbackProcessor.notice.chatId, 480666793);
-      assert.equal(callbackProcessor.notice.text, noticeText);
+      assert.equal(callbackProcessor.notices[0].chatId, 480666793);
+      assert.equal(callbackProcessor.notices[0].text, noticeText);
       assert.equal(callbackProcessor.message.text, msgText);
       assert.equal(callbackProcessor.callbackText, callbackText);
     });
