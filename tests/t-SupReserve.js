@@ -49,7 +49,7 @@ describe("class SupReserve", function() {
     });
 
     it("Проверка свойства getStateMessageText", function() {
-      let str = "";
+      let str = "\n" + strServiceLabel + strSup;
       str += "\n" + strNameLabel + "Misha V";
       str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
       str += "\n" + strStartTimeLabel + "12:50";
@@ -98,7 +98,8 @@ describe("class SupReserve", function() {
     });
     
     it("Метод getStateMessageText()", function() {
-      let str = "\n<b>Дата: </b>";
+      let str = "\n" + strServiceLabel + strSup;
+      str += "\n<b>Дата: </b>";
       str += today.toLocaleDateString(dateLocale, dateOptions);
       str += "\n<b>Вид: </b>" + strHalfHour + " (1)";
       str += '\n' + strCountLabel + 1;

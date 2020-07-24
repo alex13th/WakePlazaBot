@@ -45,7 +45,7 @@ class WakeReserve extends Reserve {
   }
   
   getStateMessageText(showContact = false) {
-    let result = '';
+    let result = '\n' + strServiceLabel + strWake;
     let confictReserve = this.findConflict();
 
     if(this.conflictCount > this.maxConfictCount) {

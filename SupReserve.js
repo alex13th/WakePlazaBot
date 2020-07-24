@@ -40,7 +40,7 @@ class SupReserve  extends Reserve {
   }
 
   getStateMessageText(showContact = false) {
-    let result = '';
+    let result = '\n' + strServiceLabel + strSup;
     let confictReserve = this.findConflict();
 
     if(this.conflictCount > this.maxConfictCount) {

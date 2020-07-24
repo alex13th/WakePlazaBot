@@ -52,7 +52,7 @@ describe("class WakeReserve", function() {
     });
 
     it("Метод getStateMessageText", function() {
-      let str = "";
+      let str = "\n" + strServiceLabel + strWake;
       str += "\n" + strNameLabel + "Misha V";
       str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
       str += "\n" + strStartTimeLabel + "12:50";
@@ -102,10 +102,10 @@ describe("class WakeReserve", function() {
     });
     
     it("Метод getStateMessageText()", function() {
-      let str = "";
+      let str = "\n" + strServiceLabel + strWake;
       str += "\n" + strDayLabel + today.toLocaleDateString(dateLocale, dateOptions);
       str += "\n" + strTypeLabel + strSet;
-      str += "\n" + strCountLabel + "1";
+      str += "\n" + strCountLabel + "1"; 
 
       assert.equal(wakeReserve.getStateMessageText(), str);
     });

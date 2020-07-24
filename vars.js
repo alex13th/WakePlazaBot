@@ -111,6 +111,9 @@ const strReloadedLabel = '<b>' + strReloaded + ':</b> ';
 const strPhone = 'Телефон';
 const strPhoneLabel = '<b>' + strPhone + ':</b> ';
 
+const strService = 'Услуга';
+const strServiceLabel = '<b>' + strService + ':</b> ';
+
 const strBoardButton = boardIcon + ' ' + strWake;
 const strHydro = 'Гидрокостюм';
 const strHydroButton = hydroIcon + ' ' + strHydro;
